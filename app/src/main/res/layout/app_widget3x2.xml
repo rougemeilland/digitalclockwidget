@@ -1,0 +1,72 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/AppWidgetRootView"
+    android:layout_width="@dimen/widget3x2_width"
+    android:layout_height="@dimen/widget3x2_height"
+    android:orientation="vertical"
+    android:padding="@dimen/widget_margin">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+        <TextView
+            android:id="@+id/HourView"
+            android:layout_width="@dimen/widget3x2_hourview_width"
+            android:layout_height="@dimen/widget3x2_hourminuteview_height"
+            android:autoSizeTextType="uniform"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="bottom|right"
+            android:maxLines="1"
+            android:text="@string/default_hour_value" />
+        <TextView
+            android:id="@+id/HourMinuteDelimiterView"
+            android:layout_width="@dimen/widget3x2_mminuteview_delimiter_width"
+            android:layout_height="@dimen/widget3x2_hourminuteview_height"
+            android:autoSizeTextType="uniform"
+            android:fontFamily="sans-serif"
+            android:maxLines="1"
+            android:gravity="center|bottom"
+            android:text=":" />
+        <TextView
+            android:id="@+id/MinuteView"
+            android:layout_width="@dimen/widget3x2_minuteview_width"
+            android:layout_height="@dimen/widget3x2_hourminuteview_height"
+            android:autoSizeTextType="uniform"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="left|bottom"
+            android:maxLines="1"
+            android:text="@string/default_minute_value" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/widget3x2_secondview_margintop">
+            <TextView
+                android:id="@+id/MinuteSecondDelimiterView"
+                android:layout_width="@dimen/widget3x2_secondview_delimiter_width"
+                android:layout_height="@dimen/widget3x2_secondview_height"
+                android:autoSizeTextType="uniform"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center|bottom"
+                android:maxLines="1"
+                android:text=":" />
+            <TextView
+                android:id="@+id/SecondView"
+                android:layout_width="@dimen/widget3x2_secondview_width"
+                android:layout_height="@dimen/widget3x2_secondview_height"
+                android:autoSizeTextType="uniform"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="left|bottom"
+                android:maxLines="1"
+                android:text="@string/default_second_value" />
+        </LinearLayout>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/DateView"
+        android:layout_width="@dimen/widget3x2_dateview_width"
+        android:layout_height="@dimen/widget3x2_dateview_height"
+        android:autoSizeTextType="uniform"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center_horizontal"
+        android:text="@string/default_date_value" />
+</LinearLayout>

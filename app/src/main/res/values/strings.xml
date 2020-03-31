@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DigitalClock</string>
+    <string name="default_hour_value" translatable="false">99</string>
+    <string name="default_minute_value" translatable="false">99</string>
+    <string name="default_second_value" translatable="false">99</string>
+    <string name="default_date_value" translatable="false">XXXX 99/99</string>
+    <string name="default_date_format">E, MMM dd</string>
+    <string name="default_foreground_color" translatable="false">#FFFFFF</string>
+    <string name="config_dateformatview_label">Date format</string>
+    <string name="config_add_widget_button_text">Add widget</string>
+    <string name="config_ok_button_text">OK</string>
+    <string name="config_cancel_button_text">Cancel</string>
+    <string name="config_foregroundview_label">Foreground color</string>
+    <string name="config_preview_button_text">Preview</string>
+    <string name="config_reset_button_text">Reset</string>
+    <string name="config_foreground_color_error_text">Input color code (e.g. &quot;#87CEEB&quot; or &quot;skyblue&quot;)</string>
+    <string name="config_foregroundcolorview_hint">e.g. &quot;#87CEEB&quot; or &quot;skyblue&quot;</string>
+    <string name="config_dateformatview_hint">e.g. &quot;E, MMM dd&quot;</string>
+    <string name="config_date_format_error_text">Input date format text (e.g. &quot;E, MMM dd&quot;)</string>
+    <string name="config_displayexamplebox_label">Display example</string>
+</resources>

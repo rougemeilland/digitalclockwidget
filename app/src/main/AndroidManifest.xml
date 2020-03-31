@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.palmtreesoftware.digitalclock">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <receiver android:name=".AppWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/app_widget_info" />
+        </receiver>
+        <!--
+        Activity をタスク履歴に残さないために android:excludeFromRecents="true" にすると、
+        ホームボタンによる Activity の停止でもタスク履歴に表示されなくなってしまうため、
+        android:excludeFromRecents="false" (既定値) のままにする
+        -->
+        <!--
+        android:launchMode="standard" (既定値) のままだと、 Activity が表示されたときに再度同じ Activity を起動したときに、
+        Activity に特に通知されないまま同じ Activity のインスタンスが使いまわされる。
+        例え渡される extras が異なっていたとしても、新たな intent の extras を取得する手段がない。
+        android:launchMode="singleTop" を指定することにより、 Activity に onNewIntent() が新たな intent の extras とともに通知されるので、適切な切り替え処理を行うことができる。
+        今回の目的には android:launchMode="singleTop" がよさそうである
+        -->
+        <activity
+            android:name=".AppWidgetConfigureActivity"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

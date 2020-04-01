@@ -23,6 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -55,51 +56,43 @@ SOFTWARE.
                 android:background="@color/configLightFrameBorderColor"
                 android:padding="@dimen/config_frame_border_width">
 
-                <FrameLayout
+                <LinearLayout
                     android:id="@+id/config_preview_box"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@color/configForegroundColor"
-                    android:padding="@dimen/config_example_box_padding">
+                    android:orientation="vertical"
+                    android:padding="@dimen/config_preview_padding">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/config_preview_hourminute_view"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:autoSizeTextType="uniform"
-                                android:text="99:99"
-                                android:textSize="60sp" />
-
-                            <TextView
-                                android:id="@+id/config_preview_second_view"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:autoSizeTextType="uniform"
-                                android:text=":99"
-                                android:textSize="40sp" />
-                        </LinearLayout>
+                        android:layout_gravity="center"
+                        android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/config_preview_date_view"
+                            android:id="@+id/config_preview_hourminute_view"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
                             android:autoSizeTextType="uniform"
-                            android:text="Sun, Jan 01"
-                            android:textSize="30sp" />
+                            android:textSize="@dimen/config_preview_hourminute_textsize" />
+
+                        <TextView
+                            android:id="@+id/config_preview_second_view"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:autoSizeTextType="uniform"
+                            android:textSize="@dimen/config_preview_second_textsize" />
                     </LinearLayout>
-                </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/config_preview_date_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:autoSizeTextType="uniform"
+                        android:textSize="@dimen/config_preview_date_textsize" />
+                </LinearLayout>
             </FrameLayout>
 
             <LinearLayout
@@ -154,7 +147,8 @@ SOFTWARE.
                     android:layout_weight="1"
                     android:hint="@string/config_dateformatview_hint"
                     android:importantForAutofill="no"
-                    android:inputType="text" />
+                    android:inputType="text"
+                    tools:ignore="TextFields" />
             </TableRow>
 
             <TableRow>
@@ -211,7 +205,8 @@ SOFTWARE.
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/config_view_margin"
             android:layout_weight="1"
-            android:text="@string/config_cancel_button_text" />
+            android:text="@string/config_cancel_button_text"
+            tools:ignore="ButtonStyle" />
 
         <Button
             android:id="@+id/config_ok_button"
@@ -219,6 +214,7 @@ SOFTWARE.
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/config_view_margin"
             android:layout_weight="1"
-            android:text="@string/config_add_widget_button_text" />
+            android:text="@string/config_add_widget_button_text"
+            tools:ignore="ButtonStyle" />
     </LinearLayout>
 </LinearLayout>

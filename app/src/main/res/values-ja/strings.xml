@@ -27,7 +27,7 @@ SOFTWARE.
     <string name="default_date_format">M月dd日(E)</string>
     <string name="config_dateformatview_label">日付の形式</string>
     <string name="config_add_widget_button_text">ウィジェットを追加</string>
-    <string name="config_ok_button_text">Ok</string>
+    <string name="config_ok_button_text">OK</string>
     <string name="config_cancel_button_text">キャンセル</string>
     <string name="config_foregroundview_label">文字の色</string>
     <string name="config_preview_button_text">確認する</string>

@@ -38,9 +38,8 @@ SOFTWARE.
             android:layout_height="@dimen/widget3x2_hourminuteview_height"
             android:autoSizeTextType="uniform"
             android:fontFamily="sans-serif-medium"
-            android:gravity="bottom|right"
-            android:maxLines="1"
-            android:text="@string/default_hour_value" />
+            android:gravity="bottom|end"
+            android:maxLines="1"/>
         <TextView
             android:id="@+id/HourMinuteDelimiterView"
             android:layout_width="@dimen/widget3x2_mminuteview_delimiter_width"
@@ -49,16 +48,15 @@ SOFTWARE.
             android:fontFamily="sans-serif"
             android:maxLines="1"
             android:gravity="center|bottom"
-            android:text=":" />
+            android:text="@string/appwidget_time_separater" />
         <TextView
             android:id="@+id/MinuteView"
             android:layout_width="@dimen/widget3x2_minuteview_width"
             android:layout_height="@dimen/widget3x2_hourminuteview_height"
             android:autoSizeTextType="uniform"
             android:fontFamily="sans-serif-medium"
-            android:gravity="left|bottom"
-            android:maxLines="1"
-            android:text="@string/default_minute_value" />
+            android:gravity="start|bottom"
+            android:maxLines="1"/>
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="wrap_content"
@@ -72,16 +70,15 @@ SOFTWARE.
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center|bottom"
                 android:maxLines="1"
-                android:text=":" />
+                android:text="@string/appwidget_time_separater" />
             <TextView
                 android:id="@+id/SecondView"
                 android:layout_width="@dimen/widget3x2_secondview_width"
                 android:layout_height="@dimen/widget3x2_secondview_height"
                 android:autoSizeTextType="uniform"
                 android:fontFamily="sans-serif-medium"
-                android:gravity="left|bottom"
-                android:maxLines="1"
-                android:text="@string/default_second_value" />
+                android:gravity="start|bottom"
+                android:maxLines="1"/>
         </LinearLayout>
     </LinearLayout>
     <TextView
@@ -90,6 +87,5 @@ SOFTWARE.
         android:layout_height="@dimen/widget3x2_dateview_height"
         android:autoSizeTextType="uniform"
         android:fontFamily="sans-serif-medium"
-        android:gravity="center_horizontal"
-        android:text="@string/default_date_value" />
+        android:gravity="center_horizontal"/>
 </LinearLayout>

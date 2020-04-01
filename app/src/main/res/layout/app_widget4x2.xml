@@ -38,9 +38,8 @@ SOFTWARE.
             android:layout_height="@dimen/widget4x2_hourminuteview_height"
             android:autoSizeTextType="uniform"
             android:fontFamily="monospace"
-            android:gravity="bottom|right"
+            android:gravity="bottom|end"
             android:maxLines="1"
-            android:text="@string/default_hour_value"
             android:textStyle="bold" />
         <TextView
             android:id="@+id/HourMinuteDelimiterView"
@@ -50,7 +49,7 @@ SOFTWARE.
             android:fontFamily="monospace"
             android:gravity="center|bottom"
             android:maxLines="1"
-            android:text=":"
+            android:text="@string/appwidget_time_separater"
             android:textStyle="bold" />
         <TextView
             android:id="@+id/MinuteView"
@@ -58,9 +57,8 @@ SOFTWARE.
             android:layout_height="@dimen/widget4x2_hourminuteview_height"
             android:autoSizeTextType="uniform"
             android:fontFamily="monospace"
-            android:gravity="left|bottom"
+            android:gravity="start|bottom"
             android:maxLines="1"
-            android:text="@string/default_minute_value"
             android:textStyle="bold" />
         <LinearLayout
             android:orientation="horizontal"
@@ -75,7 +73,7 @@ SOFTWARE.
                 android:fontFamily="monospace"
                 android:gravity="center|bottom"
                 android:maxLines="1"
-                android:text=":"
+                android:text="@string/appwidget_time_separater"
                 android:textStyle="bold" />
             <TextView
                 android:id="@+id/SecondView"
@@ -83,9 +81,8 @@ SOFTWARE.
                 android:layout_height="@dimen/widget4x2_secondview_height"
                 android:autoSizeTextType="uniform"
                 android:fontFamily="monospace"
-                android:gravity="left|bottom"
+                android:gravity="start|bottom"
                 android:maxLines="1"
-                android:text="@string/default_second_value"
                 android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
@@ -97,6 +94,5 @@ SOFTWARE.
         android:autoSizeTextType="uniform"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_horizontal"
-        android:text="@string/default_date_value"
         android:textStyle="bold" />
 </LinearLayout>

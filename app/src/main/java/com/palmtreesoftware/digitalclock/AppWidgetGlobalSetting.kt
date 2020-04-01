@@ -26,31 +26,27 @@ package com.palmtreesoftware.digitalclock
 
 import android.content.Context
 
-class AppWidgetGlobalSetting(var appWidgetClickAction: AppWidgetClickAction) {
+class AppWidgetGlobalSetting(val appWidgetClickAction: AppWidgetClickAction) {
 
     fun save(context: Context) {
-        val prefs = context.getSharedPreferences(Companion.PREFS_NAME, 0).edit()
-        prefs.putString(Companion.PREF_KEY_CLICK_ACTION, appWidgetClickAction.id)
+        val prefs = context.getSharedPreferences(PREFS_NAME, 0).edit()
+        prefs.putString(PREF_KEY_CLICK_ACTION, appWidgetClickAction.id)
         prefs.apply()
     }
 
     companion object {
         private const val PREFS_NAME = "com.palmtreesoftware.digitalclock.AppWidgetGlobalSetting"
-        private const val PREF_KEY_CLICK_ACTION = "clickaction-"
+        private const val PREF_KEY_CLICK_ACTION = "clickaction"
 
         fun load(context: Context): AppWidgetGlobalSetting {
             val prefs = context.getSharedPreferences(PREFS_NAME, 0)
-            val clickAction = prefs.getString(PREF_KEY_CLICK_ACTION, null)
-            val clickActionType =
-                if (clickAction == null)
-                    AppWidgetClickAction.ACTION_LAUNCH_CONFIGURE
-                else
-                    try {
-                        AppWidgetClickAction.valueOf(clickAction)
-                    } catch (ex: IllegalArgumentException) {
-                        AppWidgetClickAction.ACTION_LAUNCH_CONFIGURE
-                    }
-            return AppWidgetGlobalSetting(clickActionType)
+            prefs.getString(PREF_KEY_CLICK_ACTION, null).let { actionText ->
+                return AppWidgetGlobalSetting(if (actionText == null) {
+                    AppWidgetClickAction.LAUNCH_CONFIGURE
+                } else {
+                    AppWidgetClickAction.values().firstOrNull { value -> value.id == actionText } ?: AppWidgetClickAction.LAUNCH_CONFIGURE
+                })
+            }
         }
     }
 }

@@ -27,6 +27,8 @@ package com.palmtreesoftware.digitalclock
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
+import android.content.ActivityNotFoundException
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -37,8 +39,6 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
-// TODO("AppWidgetGlobalSetting を設定するアクティビティを作る")
-// TODO("widget のタップ時にgoogle時計が起動できるようにする")
 // TODO("minSdkVersion を下げる。サポートライブラリが使えるか調べる")
 // TODO("参考：https://teratail.com/questions/94099")
 // TODO("参考：https://developer.android.com/studio/publish/versioning?hl=ja")
@@ -124,7 +124,7 @@ open class AppWidget : AppWidgetProvider() {
             updateAppWidget(context, appWidgetManager, views, appWidgetState, UpdateAppWidgetFlags.REDRAW_FORCELY)
         }
 
-        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
+        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -144,7 +144,7 @@ open class AppWidget : AppWidgetProvider() {
                 val appWidgetManager = AppWidgetManager.getInstance(context)
 
                 // アクションの対象の appWidgetId を取得する
-                val appWidgetId = AppWidget.parseExterasAsAppWidgetId(intent.extras)
+                val appWidgetId = parseExterasAsAppWidgetId(intent.extras)
                 if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
                     Log.d(javaClass.canonicalName + ".onReceive()", "Bad appWidgetId")
                     return
@@ -197,11 +197,50 @@ open class AppWidget : AppWidgetProvider() {
 
     private fun onTouchWidget(context: Context, appWidgetId: Int)
     {
-        val globalSetting = AppWidgetGlobalSetting.load(context)
-        when (globalSetting.appWidgetClickAction)
+        when (AppWidgetGlobalSetting.load(context).appWidgetClickAction.also {
+            Log.d(
+                javaClass.canonicalName + ".onTouchWidget()",
+                "appWidgetId=" + appWidgetId + "AppWidgetGlobalSetting.appWidgetClickAction=" + it.id
+            )
+        })
         {
-            AppWidgetClickAction.ACTION_LAUNCH_GOOGLE_CLOCK_APPLICATION-> {}
-            else -> launchConfigure(context, appWidgetId)
+            AppWidgetClickAction.LAUNCH_GOOGLE_CLOCK_APPLICATION-> {
+                launchGoogleClock(context, appWidgetId)
+            }
+            else -> {
+                launchConfigure(context, appWidgetId)
+            }
+        }
+    }
+
+    private fun launchGoogleClock(context: Context, appWidgetId: Int) {
+        Log.d(
+            javaClass.canonicalName + ".launchGoogleClock()",
+            "Started: appWidgetId=" + appWidgetId
+        )
+        knownApplicationInfos[googleClockPackageName]?.let { googleClockAppInfo ->
+            try {
+                Log.d(
+                    javaClass.canonicalName + ".launchGoogleClock()",
+                    "Creating intent: appWidgetId=" + appWidgetId
+                )
+
+                val intent = Intent(googleClockAppInfo.actionName)
+                googleClockAppInfo.categories.forEach { intent.addCategory(it) }
+                intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
+                intent.setComponent(
+                    ComponentName(
+                        googleClockAppInfo.packageName,
+                        googleClockAppInfo.className
+                    )
+                )
+                PendingIntent.getActivity(context, 0, intent, 0).send()
+            } catch (ex: ActivityNotFoundException) {
+                Log.d(
+                    javaClass.canonicalName + ".launchGoogleClock()",
+                    "Not installed google clock application: appWidgetId=" + appWidgetId
+                )
+            }
         }
     }
 
@@ -216,69 +255,6 @@ open class AppWidget : AppWidgetProvider() {
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId) // これを設定しないと、 AppWidgetConfigureActivity での intent.extras が null になってしまう
         PendingIntent.getActivity(context, 0, intent, 0).send() // 第2パラメタが appWidgetId でなくても AppWidgetConfigureActivity は正常に表示される
     }
-
-
-/*
-    private fun setOnClickAction(
-        context: Context,
-        views: RemoteViews,
-        appWidgetId: Int
-    ) {
-        val globalSetting = loadGlobalSetting(context)
-        val pendingIntent: PendingIntent
-        if (globalSetting.appWidgetClickActionType == AppWidgetClickActionType.ACTION_LAUNCH_CLOCK_APPLICATION1) {
-            pendingIntent =
-                try {
-                    Log.d("ActivityLauncher", "AppWidgetProviderBase.setOnClickAction.1")
-                    val intent = Intent("android.intent.action.MAIN");
-                    //intent.addCategory("android.intent.category.DEFAULT");
-                    intent.addCategory("android.intent.category.LAUNCHER");
-                    intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
-                    intent.setComponent(
-                        ComponentName(
-                            "com.google.android.deskclock",
-                            "com.android.deskclock.DeskClock"
-                        )
-                    )
-                    PendingIntent.getActivity(context, 0, intent, 0)
-                } catch (ex: ActivityNotFoundException) {
-                    Log.d("ActivityLauncher", "AppWidgetProviderBase.setOnClickAction.2")
-                    setOnClickActionToConfigure(context, appWidgetId)
-                }
-        } else if (globalSetting.appWidgetClickActionType == AppWidgetClickActionType.ACTION_LAUNCH_CLOCK_APPLICATION2) {
-            pendingIntent =
-                try {
-                    Log.d("ActivityLauncher", "AppWidgetProviderBase.setOnClickAction.3")
-                    val intent = Intent("android.intent.action.MAIN");
-                    intent.addCategory("android.intent.category.LAUNCHER");
-                    intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
-                    intent.setComponent(
-                        ComponentName(
-                            "com.palmtreesoftware.digitalclock",
-                            "fully qualified name of main activity of the app"
-                        )
-                    )
-                    PendingIntent.getActivity(context, 0, intent, 0)
-                } catch (ex: ActivityNotFoundException) {
-                    Log.d("ActivityLauncher", "AppWidgetProviderBase.setOnClickAction.4")
-                    setOnClickActionToConfigure(context, appWidgetId)
-                }
-        } else {
-            pendingIntent = setOnClickActionToConfigure(context, appWidgetId)
-        }
-        views.setOnClickPendingIntent(R.id.AppWidgetRootView, pendingIntent);
-    }
-
-    private fun setOnClickActionToConfigure(
-        context: Context,
-        appWidgetId: Int
-    ): PendingIntent {
-        //TODO("appWidgetId が AppWidgetConfigureActivity に正しく渡っていない extras が null になっている")
-        val intent = getAppWidgetConfigureActivityIntent(context)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        return PendingIntent.getActivity(context, appWidgetId, intent, 0)
-    }
-*/
 
     // ウィジェットの単一インスタンスの表示の更新
     private fun updateAppWidget(
@@ -307,22 +283,22 @@ open class AppWidget : AppWidgetProvider() {
         flags: UpdateAppWidgetFlags
     ) {
         // 現在時刻の取得
-        val nowDateTime = LocalDateTime.now();
+        val nowDateTime = LocalDateTime.now()
         val currentSecond = nowDateTime.toEpochSecond(ZoneOffset.UTC)
 
         // 前回実行時刻と現在時刻により判定
-        val intervalMillisecond: Long;
+        val intervalMillisecond: Long
         val doUpdateAppWidget: Boolean
         if (appWidgetState.previousSecond <= 0) {
             // 前回実行時刻が未設定の場合
             // 100ms後に再試行するようインターバルタイムを設定する
-            intervalMillisecond = 100;
+            intervalMillisecond = 100
             // ビューを更新する
             doUpdateAppWidget = true
         } else if (currentSecond == appWidgetState.previousSecond) {
             // 現在時刻が前回実行時刻と比べて秒単位で変化していない場合
             // 100ms後に再試行するようインターバルタイムを設定する
-            intervalMillisecond = 100;
+            intervalMillisecond = 100
             // REDRAW_FORCELY フラグが指定されていない限り、ビューは更新しない
             if (flags.contains(UpdateAppWidgetFlags.REDRAW_FORCELY))
                 doUpdateAppWidget = true
@@ -332,7 +308,7 @@ open class AppWidget : AppWidgetProvider() {
         } else {
             // 現在時刻が前回実行時刻と比べて秒単位で秒数が変化している場合
             // 950ms後に再試行するようインターバルタイムを設定する
-            intervalMillisecond = 950;
+            intervalMillisecond = 950
             // ビューを更新する
             doUpdateAppWidget = true
         }
@@ -417,10 +393,10 @@ open class AppWidget : AppWidgetProvider() {
     }
 
     private fun getRemoteViews(context:Context, appWidgetManager: AppWidgetManager, appWidgetId: Int): RemoteViews {
-        // Widget に関する設定を取得する
-        val options = appWidgetManager.getAppWidgetOptions(appWidgetId);
+        // Widget のサイズ情報を取得する
+        val options = appWidgetManager.getAppWidgetOptions(appWidgetId)
 
-        // Widget の現在のサイズを取得する
+        // 現在の Widget の現在のサイズを取得する
         val minWidth = options?.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH) ?: 0
         val minHeight = options?.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT) ?: 0
 
@@ -429,7 +405,7 @@ open class AppWidget : AppWidgetProvider() {
         val columns = getCellsForSize(minWidth)
 
         // 行数と列数により適切なレイアウトを決定する
-        return RemoteViews(context.packageName, selectLayout(columns, rows)).also {
+        return RemoteViews(context.packageName, selectLayout(columns, rows)).also { remoteViews ->
             // 作成された RemoteViews のインスタンスに対し、ウィジェットをタッチしたときに intent がブロードキャストで配信されるように登録する
             // (同じアプリ内向けなのが理由か不明だが、 manifest の intent-filter には特に何も書かなくても配信されている)
             // 【重要】 RemoteViews のインスタンスが作られたらその都度 setOnClickPendingIntent を発行しないとアクションは実行されない
@@ -445,7 +421,7 @@ open class AppWidget : AppWidgetProvider() {
                     intent,
                     0
                 ) // 第2パラメタに appWidgetId を指定しないと onReceive が呼び出されない
-                it.setOnClickPendingIntent(R.id.AppWidgetRootView, pendingIntent)
+                remoteViews.setOnClickPendingIntent(R.id.AppWidgetRootView, pendingIntent)
                 Log.d(
                     javaClass.canonicalName + ".getRemoteViews()",
                     "Registered action: appWidgetId=" + appWidgetId + ", packageName=" + intent.component?.packageName + ", className=" + intent.component?.className + ", actionName=" + intent.action
@@ -454,17 +430,37 @@ open class AppWidget : AppWidgetProvider() {
         }
     }
 
-    fun selectLayout(columns: Int, rows: Int): Int {
-        return when {
-            columns >= 4 && rows >= 2 -> R.layout.app_widget4x2
-            else -> R.layout.app_widget3x2
-        }
-    }
+    companion object {
+        private class KnownApplicationInfo(
+            val packageName: String,
+            val className: String,
+            val categories: Array<String>,
+            val actionName: String
+        )
 
-    companion object
-    {
+        private val googleClockPackageName = "com.google.android.deskclock"
+        private val knownApplicationInfos =
+            mutableMapOf<String, KnownApplicationInfo>().also { knownAppMap ->
+                arrayOf(
+                    KnownApplicationInfo(
+                        googleClockPackageName,
+                        "com.android.deskclock.DeskClock",
+                        arrayOf("android.intent.category.LAUNCHER"),
+                        "android.intent.action.MAIN"
+                    )
+                ).forEach { knownApp -> knownAppMap[knownApp.packageName] = knownApp }
+            }
+
+        // 与えられた表示領域のセル数に対し適切なレイアウトを決定する
+        private fun selectLayout(columns: Int, rows: Int): Int {
+            return when {
+                columns >= 4 && rows >= 2 -> R.layout.app_widget4x2
+                else -> R.layout.app_widget3x2
+            }
+        }
+
         // 画面上の長さからセル数を求める
-        private fun getCellsForSize(size:Int):Int {
+        private fun getCellsForSize(size: Int): Int {
             return (size + 30) / 70
         }
 
@@ -476,6 +472,5 @@ open class AppWidget : AppWidgetProvider() {
             )
                 ?: AppWidgetManager.INVALID_APPWIDGET_ID
         }
-
     }
 }

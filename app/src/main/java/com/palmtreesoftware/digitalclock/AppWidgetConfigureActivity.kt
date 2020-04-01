@@ -24,18 +24,18 @@ SOFTWARE.
 
 package com.palmtreesoftware.digitalclock
 
-import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.app_widget_configure.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class AppWidgetConfigureActivity : Activity() {
+class AppWidgetConfigureActivity : AppCompatActivity() {
     private var appWidgetId: Int = AppWidgetManager.INVALID_APPWIDGET_ID
     private val colorCodeFilter: RegexInputFilter =
         RegexInputFilter("^|(#[0-9a-fA-F]{0,6})|([a-zA-Z]+)$")
@@ -143,7 +143,7 @@ class AppWidgetConfigureActivity : Activity() {
 
         // ”PREVIEW" ボタンのクリックハンドラを登録する
         config_preview_button.setOnClickListener {
-            val appWidgetSetting = validateForm()?.let {
+            validateForm()?.let {
                 exampleViewState.setSetting(it)
                 drawExampleView(it)
             }
@@ -328,10 +328,10 @@ class AppWidgetConfigureActivity : Activity() {
             })
 
         // 現在時刻の設定
-        val nowDateTime = LocalDateTime.now();
+        val nowDateTime = LocalDateTime.now()
         config_preview_hourminute_view.text =
-            "%02d:%02d".format(nowDateTime.hour, nowDateTime.minute)
-        config_preview_second_view.text = ":%02d".format(nowDateTime.second)
+            getString(R.string.config_exampleview_hourminute_format).format(nowDateTime.hour, nowDateTime.minute)
+        config_preview_second_view.text = getString(R.string.config_exampleview_minute_format).format(nowDateTime.second)
         val dateFormatter = DateTimeFormatter.ofPattern(appWidgetSetting.dateFormat)
         config_preview_date_view.text = nowDateTime.format(dateFormatter)
     }
@@ -370,7 +370,7 @@ class AppWidgetConfigureActivity : Activity() {
                 start()
             }.also {
                 exampleRefreshingRunable = it
-                exampleRefreshingHandler.postDelayed(it, Companion.intervalMillisecond)
+                exampleRefreshingHandler.postDelayed(it, intervalMillisecond)
             }
         }
 
@@ -385,7 +385,7 @@ class AppWidgetConfigureActivity : Activity() {
         abstract fun drawView(appWidgetSetting: AppWidgetSetting)
 
         companion object {
-            private const val intervalMillisecond: Long = 1000;
+            private const val intervalMillisecond: Long = 1000
         }
     }
 

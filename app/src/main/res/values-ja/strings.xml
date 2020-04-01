@@ -37,4 +37,10 @@ SOFTWARE.
     <string name="config_dateformatview_hint">例) M月dd日(E)</string>
     <string name="config_date_format_error_text">日付の形式を入力してください 例） &quot;M月dd日(E)&quot;</string>
     <string name="config_displayexamplebox_label">表示サンプル</string>
+    <string name="global_config_action_selection_view_label">ウィジェットをタッチしたときの動作</string>
+    <string name="global_config_launch_widget_configuration_activity_button_text">ウィジェットの設定をする</string>
+    <string name="global_config_launch_digital_clock_application_button_text">時計アプリを起動する</string>
+    <string name="global_config_cancel_button_text">キャンセル</string>
+    <string name="global_config_ok_button_text">OK</string>
+    <string name="global_config_action_selection_warning_view_text">複数のウィジェットが表示されている場合、この設定を変更するとすべてのウィジェットに変更が適用されます。</string>
 </resources>

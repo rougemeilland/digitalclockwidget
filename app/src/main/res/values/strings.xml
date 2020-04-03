@@ -25,16 +25,16 @@ SOFTWARE.
     <string name="app_name">DigitalClock</string>
     <string name="default_date_format">E, MMM dd</string>
     <string name="default_foreground_color" translatable="false">#FFFFFF</string>
-    <string name="config_dateformatview_label">Date format</string>
+    <string name="config_dateformat_view_label">Date format</string>
     <string name="config_add_widget_button_text">Add widget</string>
     <string name="config_ok_button_text">OK</string>
     <string name="config_cancel_button_text">Cancel</string>
-    <string name="config_foregroundview_label">Foreground color</string>
+    <string name="config_foreground_color_view_label">Foreground color</string>
     <string name="config_preview_button_text">Preview</string>
     <string name="config_reset_button_text">Reset</string>
     <string name="config_foreground_color_error_text">Input color code (e.g. &quot;#87CEEB&quot; or &quot;skyblue&quot;)</string>
-    <string name="config_foregroundcolorview_hint">e.g. &quot;#87CEEB&quot; or &quot;skyblue&quot;</string>
-    <string name="config_dateformatview_hint">e.g. &quot;E, MMM dd&quot;</string>
+    <string name="config_foreground_color_view_hint">e.g. &quot;#87CEEB&quot; or &quot;skyblue&quot;</string>
+    <string name="config_dateformat_view_hint">e.g. &quot;E, MMM dd&quot;</string>
     <string name="config_date_format_error_text">Input date format text (e.g. &quot;E, MMM dd&quot;)</string>
     <string name="config_displayexamplebox_label">Display example</string>
     <string name="global_config_action_selection_view_label">Select action on touching widget</string>
@@ -46,4 +46,16 @@ SOFTWARE.
     <string name="config_exampleview_hourminute_format" translatable="false">%02d:%02d</string>
     <string name="config_exampleview_minute_format" translatable="false">:%02d</string>
     <string name="appwidget_time_separater" translatable="false">:</string>
+    <string name="config_timezone_view_label">Time zone</string>
+    <string name="config_timezone_gmt_label">GMT</string>
+    <string-array name="config_timezone_name_selection_items">
+        <item>-@System default</item>
+        <item>GMT@Greenwich Mean Time</item>
+        <item>Asia/Tokyo@Japan Standard Time</item>
+        <item>America/New_York@Eastern Standard Time</item>
+        <item>America/Los_Angeles@Pacific Standard Time</item>
+        <item>Europe/Berlin@Central European Standard Time</item>
+        <item>Europe/Lisbon@Western European Standard Time</item>
+        <item>*@Enter the time difference from GMT</item>
+    </string-array>
 </resources>

@@ -30,6 +30,6 @@ SOFTWARE.
     <color name="configForegroundColor">#ffffff</color>
     <color name="configBorderColor">#333333</color>
     <color name="configLightFrameBorderColor">#777777</color>
-    <color name="configPreviewLightBackgroundColor">#bbbbbb</color>
-    <color name="configPreviewDarkBackgroundColor">#555555</color>
+    <color name="configPreviewLightBackgroundColor">#dddddd</color>
+    <color name="configPreviewDarkBackgroundColor">#333333</color>
 </resources>

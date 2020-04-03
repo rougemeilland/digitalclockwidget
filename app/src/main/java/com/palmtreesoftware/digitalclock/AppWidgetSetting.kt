@@ -25,18 +25,20 @@ SOFTWARE.
 package com.palmtreesoftware.digitalclock
 
 import android.content.Context
+import android.os.Build
 
 class AppWidgetSetting(
-    var appWidgetId: Int,
-    var dateFormat: String,
-    var foregroundColorName: String,
-    var foregroundColorCode: Int
-)
-{
+    val appWidgetId: Int,
+    val dateFormat: String,
+    val foregroundColorName: String,
+    val foregroundColorCode: Int,
+    val timeZone: AppWidgetTimeZone
+) {
     fun save(context: Context) {
         val prefs = context.getSharedPreferences(PREFS_NAME, 0).edit()
         prefs.putString(PREF_KEY_DATE_FORMAT + appWidgetId, dateFormat)
         prefs.putString(PREF_KEY_FOREGROUND_COLOR + appWidgetId, foregroundColorName)
+        prefs.putString(PREF_KEY_TIMEZONE_ID + appWidgetId, timeZone.id)
         prefs.apply()
     }
 
@@ -44,14 +46,15 @@ class AppWidgetSetting(
         val prefs = context.getSharedPreferences(PREFS_NAME, 0).edit()
         prefs.remove(PREF_KEY_DATE_FORMAT + appWidgetId)
         prefs.remove(PREF_KEY_FOREGROUND_COLOR + appWidgetId)
+        prefs.remove(PREF_KEY_TIMEZONE_ID + appWidgetId)
         prefs.apply()
     }
 
-    companion object
-    {
+    companion object {
         private const val PREFS_NAME = "com.palmtreesoftware.digitalclock.AppWidgetSetting"
         private const val PREF_KEY_DATE_FORMAT = "dateformat-"
         private const val PREF_KEY_FOREGROUND_COLOR = "foreground-"
+        private const val PREF_KEY_TIMEZONE_ID = "timezone-"
 
         fun initialValue(
             context: Context,
@@ -60,7 +63,12 @@ class AppWidgetSetting(
             appWidgetId,
             context.getString(R.string.default_date_format),
             context.getString(R.string.default_foreground_color),
-            context.getColor(R.color.appWidgetDefaultForegroundColor)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                context.getColor(R.color.appWidgetDefaultForegroundColor)
+            } else {
+                0xffffff
+            },
+            AppWidgetTimeZone.getDefault()
         )
 
         fun load(
@@ -70,7 +78,13 @@ class AppWidgetSetting(
             val prefs = context.getSharedPreferences(PREFS_NAME, 0)
             val dateFormat = prefs.getString(PREF_KEY_DATE_FORMAT + appWidgetId, null)
             val foregroundColor = prefs.getString(PREF_KEY_FOREGROUND_COLOR + appWidgetId, null)
-            val parsedColor = ParsedColorCode.fromString(foregroundColor ?: context.getString(R.string.default_foreground_color))
+            val parsedColor = ParsedColorCode.fromString(
+                foregroundColor ?: context.getString(R.string.default_foreground_color)
+            )
+            val timeZone = AppWidgetTimeZone.parseFromTimeZoneId(prefs.getString(
+                PREF_KEY_TIMEZONE_ID + appWidgetId,
+                null
+            ).let { it ?: AppWidgetTimeZone.timeZoneIdOfSystemDefault })
             return AppWidgetSetting(
                 appWidgetId,
                 dateFormat ?: context.getString(R.string.default_date_format),
@@ -80,8 +94,13 @@ class AppWidgetSetting(
                 },
                 when {
                     parsedColor.success -> parsedColor.colorCode
-                    else -> context.getColor(R.color.appWidgetDefaultForegroundColor)
-                }
+                    else -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        context.getColor(R.color.appWidgetDefaultForegroundColor)
+                    } else {
+                        0xffffff
+                    }
+                },
+                timeZone
             )
         }
     }

@@ -25,25 +25,29 @@ SOFTWARE.
 package com.palmtreesoftware.digitalclock
 
 import android.appwidget.AppWidgetManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.NumberPicker
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.app_widget_configure.*
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+
 
 class AppWidgetConfigureActivity : AppCompatActivity() {
     private var appWidgetId: Int = AppWidgetManager.INVALID_APPWIDGET_ID
-    private val colorCodeFilter: RegexInputFilter =
-        RegexInputFilter("^|(#[0-9a-fA-F]{0,6})|([a-zA-Z]+)$")
     private val exampleViewState = object : ExampleViewState() {
         override fun drawView(appWidgetSetting: AppWidgetSetting) {
             drawExampleView(appWidgetSetting)
         }
     }
+    private var timeZoneNameSelectionItems: Array<SelectionItem> = arrayOf()
 
     public override fun onCreate(icicle: Bundle?) {
         super.onCreate(icicle)
@@ -55,6 +59,10 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             javaClass.canonicalName + ".onCreate()",
             "Started"
         )
+
+        timeZoneNameSelectionItems =
+            SelectionItem.fromResource(this, R.array.config_timezone_name_selection_items)
+
         startUpActivity(intent)
     }
 
@@ -140,6 +148,29 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             exampleViewState.setSetting(it)
             drawExampleView(it)
         }
+
+        // タイムゾーン選択 spinner のハンドラを登録する
+        config_timesone_name.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    val selectedItem = getSelectedItem(timeZoneNameSelectionItems, position)
+                    config_timesone_by_number_box.visibility =
+                        if (selectedItem.id == AppWidgetTimeZone.timeZoneIdOfTimeDifferenceExpression) {
+                            View.VISIBLE
+                        } else {
+                            View.GONE
+                        }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    config_timesone_name.setSelection(0)
+                }
+            }
 
         // ”PREVIEW" ボタンのクリックハンドラを登録する
         config_preview_button.setOnClickListener {
@@ -240,10 +271,38 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
     }
 
     private fun initializeForm(appWidgetSetting: AppWidgetSetting) {
+        // タイムゾーン名選択 spinner の選択項目を設定する
+        config_timesone_name.adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            timeZoneNameSelectionItems.map { it.text }
+        )
+            .also {
+                it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            }
+
+        // タイムゾーンの時差(時)の選択項目を設定する
+        config_timesone_hour.maxValue = AppWidgetTimeZone.maxTimeZoneHour
+        config_timesone_hour.minValue = AppWidgetTimeZone.minTimeZoneHour
+        config_timesone_hour.setFormatter(object : NumberPicker.Formatter {
+            override fun format(value: Int): String {
+                return AppWidgetTimeZone.getHourStringOnForm("%+03d", value)
+            }
+        })
+
+        // タイムゾーンの時差(分)の選択項目を設定する
+        config_timesone_minute.maxValue = AppWidgetTimeZone.maxTimeZoneMinute
+        config_timesone_minute.minValue = AppWidgetTimeZone.minTimeZoneMinute
+        config_timesone_minute.setFormatter(object : NumberPicker.Formatter {
+            override fun format(value: Int): String {
+                return AppWidgetTimeZone.getMinuteStringOnForm("%02d", value)
+            }
+        })
+
+        // 表示サンプルのデータを初期化する
         exampleViewState.setSetting(appWidgetSetting)
-        config_foreground_color_view.filters = arrayOf(colorCodeFilter)
-        config_date_format_view.setText(appWidgetSetting.dateFormat)
-        config_foreground_color_view.setText(appWidgetSetting.foregroundColorName)
+
+        // 表示サンプルの文字色を初期化する
         appWidgetSetting.foregroundColorCode
             .let { color ->
                 arrayOf(
@@ -252,6 +311,24 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
                     config_preview_date_view
                 ).forEach { it.setTextColor(color) }
             }
+
+        // フォームの入力値を初期化する
+        config_foreground_color_view.filters = arrayOf(colorCodeFilter)
+        config_date_format_view.setText(appWidgetSetting.dateFormat)
+        config_foreground_color_view.setText(appWidgetSetting.foregroundColorName)
+        config_timesone_name.setSelection(
+            timeZoneNameSelectionItems.mapIndexed { index, selectionItem ->
+                Pair(index, selectionItem.id)
+            }
+                .filter {
+                    it.second == appWidgetSetting.timeZone.idOnForm
+                }.map {
+                    it.first
+                }.firstOrNull()
+                ?: 0
+        )
+        config_timesone_hour.value = appWidgetSetting.timeZone.hourOnForm
+        config_timesone_minute.value = appWidgetSetting.timeZone.minuteOnForm
     }
 
     private fun validateForm(): AppWidgetSetting? {
@@ -259,10 +336,13 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         val dateFormatValidity =
             when {
                 !dateFormat.isEmpty() -> {
-                    true.also { config_date_format_view.setError(null) }
+                    true.also { config_date_format_view.error = null }
                 }
                 else -> {
-                    false.also { config_date_format_view.setError(getString(R.string.config_date_format_error_text)) }
+                    false.also {
+                        config_date_format_view.error =
+                            getString(R.string.config_date_format_error_text)
+                    }
                 }
             }
 
@@ -271,13 +351,17 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         val foregroundColorValidity =
             when {
                 parsedForegroundColorCode.success -> {
-                    true.also { config_foreground_color_view.setError(null) }
+                    true.also { config_foreground_color_view.error = null }
                 }
                 else -> {
-                    false.also { config_foreground_color_view.setError(getString(R.string.config_foreground_color_error_text)) }
+                    false.also {
+                        config_foreground_color_view.error =
+                            getString(R.string.config_foreground_color_error_text)
+                    }
                 }
             }
-
+        val selectedTimeZoneItem =
+            getSelectedItem(timeZoneNameSelectionItems, config_timesone_name.selectedItemPosition)
         return when {
             !dateFormatValidity -> {
                 null.also { config_date_format_view.requestFocus() }
@@ -287,11 +371,25 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             }
             else -> {
                 assert(parsedForegroundColorCode.success)
+                Log.d(
+                    javaClass.canonicalName + ".validateForm()",
+                    "Validating: selectedTimeZoneItem=" + selectedTimeZoneItem.id + ", config_timesone_hour.Value=" + config_timesone_hour.value + ", config_timesone_minute.value=" + config_timesone_minute.value
+                )
                 AppWidgetSetting(
                     appWidgetId,
                     dateFormat,
                     foregroundColorName,
-                    parsedForegroundColorCode.colorCode
+                    parsedForegroundColorCode.colorCode,
+                    AppWidgetTimeZone.fromFormValues(
+                        selectedTimeZoneItem.id,
+                        config_timesone_hour.value,
+                        config_timesone_minute.value
+                    ).also {
+                        Log.d(
+                            javaClass.canonicalName + ".validateForm()",
+                            "Validated (OK): timeZoneId=" + it.id
+                        )
+                    }
                 )
             }
         }
@@ -309,38 +407,97 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
         // 背景色の決定と設定
         config_preview_box.setBackgroundColor(
-            Color.valueOf(appWidgetSetting.foregroundColorCode).let {
-                if (it.red() + it.green() + it.blue() >=
-                    (it.colorSpace.getMinValue(0) + it.colorSpace.getMaxValue(0)) / 2 +
-                    (it.colorSpace.getMinValue(1) + it.colorSpace.getMaxValue(1)) / 2 +
-                    (it.colorSpace.getMinValue(2) + it.colorSpace.getMaxValue(2)) / 2
-                ) {
-                    // 文字の色が比較的明るい場合
+            appWidgetSetting.foregroundColorCode.let { foregroundColorCode ->
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    Color.valueOf(foregroundColorCode).let { foregroundColor ->
+                        if (foregroundColor.red() + foregroundColor.green() + foregroundColor.blue() >=
+                            (foregroundColor.colorSpace.getMinValue(0) + foregroundColor.colorSpace.getMaxValue(
+                                0
+                            )) / 2 +
+                            (foregroundColor.colorSpace.getMinValue(1) + foregroundColor.colorSpace.getMaxValue(
+                                1
+                            )) / 2 +
+                            (foregroundColor.colorSpace.getMinValue(2) + foregroundColor.colorSpace.getMaxValue(
+                                2
+                            )) / 2
+                        ) {
+                            // 文字の色が比較的明るい場合
 
-                    // 背景色を暗くする
-                    getColor(R.color.configPreviewDarkBackgroundColor)
+                            // 背景色を暗くする
+                            getColor(R.color.configPreviewDarkBackgroundColor)
+                        } else {
+                            // 文字の色が比較的暗い場合
+
+                            // 背景色を暗くする
+                            getColor(R.color.configPreviewLightBackgroundColor)
+                        }
+                    }
                 } else {
-                    // 文字の色が比較的暗い場合
+                    Log.d(
+                        javaClass.canonicalName + ".drawExampleView()",
+                        "colorCode=" + String.format("#%06x", foregroundColorCode)
+                    )
+                    Log.d(
+                        javaClass.canonicalName + ".drawExampleView()",
+                        "r=" + (foregroundColorCode.shr(16) and 0xff)
+                    )
+                    Log.d(
+                        javaClass.canonicalName + ".drawExampleView()",
+                        "g=" + (foregroundColorCode.shr(8) and 0xff)
+                    )
+                    Log.d(
+                        javaClass.canonicalName + ".drawExampleView()",
+                        "b=" + (foregroundColorCode and 0xff)
+                    )
+                    if ((foregroundColorCode.shr(16) and 0xff) + (foregroundColorCode.shr(8) and 0xff) + (foregroundColorCode and 0xff) >= 255 * 3 / 2) {
+                        // 文字の色が比較的明るい場合
 
-                    // 背景色を暗くする
-                    getColor(R.color.configPreviewLightBackgroundColor)
+                        // 背景色を暗くする
+                        0xff333333.toInt().also {
+                            Log.d(
+                                javaClass.canonicalName + ".drawExampleView()",
+                                "backgroundColor=" + String.format("#%06x", it)
+                            )
+                        }
+                    } else {
+                        // 文字の色が比較的暗い場合
+
+                        // 背景色を明るくする
+                        0xffdddddd.toInt().also {
+                            Log.d(
+                                javaClass.canonicalName + ".drawExampleView()",
+                                "backgroundColor=" + String.format("#%06x", it)
+                            )
+                        }
+                    }
                 }
+            }.also {
+                Log.d(
+                    javaClass.canonicalName + ".drawExampleView()",
+                    "backgroundColor=" + String.format("#%06x", it)
+                )
             })
 
         // 現在時刻の設定
-        val nowDateTime = LocalDateTime.now()
+        val nowDateTime = AppWidgetDateTime.now(
+            appWidgetSetting.dateFormat,
+            appWidgetSetting.timeZone
+        )
         config_preview_hourminute_view.text =
-            getString(R.string.config_exampleview_hourminute_format).format(nowDateTime.hour, nowDateTime.minute)
-        config_preview_second_view.text = getString(R.string.config_exampleview_minute_format).format(nowDateTime.second)
-        val dateFormatter = DateTimeFormatter.ofPattern(appWidgetSetting.dateFormat)
-        config_preview_date_view.text = nowDateTime.format(dateFormatter)
+            getString(R.string.config_exampleview_hourminute_format).format(
+                nowDateTime.hour,
+                nowDateTime.minute
+            )
+        config_preview_second_view.text =
+            getString(R.string.config_exampleview_minute_format).format(nowDateTime.second)
+        config_preview_date_view.text = nowDateTime.dateString
     }
 
     // appWidgetId の ID を持つ Widget のインスタンスに REFRESH_WIDGET メッセージを送信する
     private fun requestToRefreshWidgetInstance(appWidgetId: Int) {
         Intent(this, AppWidget::class.java).also { intent ->
             Log.d(
-                javaClass.canonicalName + ".requestToRefreshWidgetInstance()",
+                javaClass.canonicalName + ".requestToRefresh...",
                 "Clicked cancel button: appWidgetId=" + appWidgetId
             )
 
@@ -349,6 +506,33 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
             // intent を送信する
             sendBroadcast(intent)
+        }
+    }
+
+    private fun getSelectedItem(
+        selectionItems: Array<SelectionItem>,
+        position: Int
+    ): SelectionItem {
+        return selectionItems[if (position < 0 || position >= selectionItems.count()) {
+            0
+        } else {
+            position
+        }]
+    }
+
+    private class SelectionItem(val id: String, val text: String) {
+        companion object {
+            fun fromResource(context: Context, resourceId: Int): Array<SelectionItem> {
+                return context.resources.getStringArray(resourceId).map { source ->
+                    val m = selectionItemPattern.matchEntire(source)
+                    if (m != null)
+                        SelectionItem(m.destructured.component1(), m.destructured.component2())
+                    else
+                        SelectionItem("", "")
+                }.filter { item ->
+                    item.id.isNotEmpty() && item.text.isNotEmpty()
+                }.toTypedArray()
+            }
         }
     }
 
@@ -390,10 +574,16 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
     }
 
     companion object {
-        private class IntentExtrasContainer(val appWidgetId: Int, val launchedOnWidgetClicked: Boolean)
-        {
-            companion object{
-                fun parse(extras: Bundle?) : IntentExtrasContainer {
+        private val colorCodeFilter: RegexInputFilter =
+            RegexInputFilter("^|(#[0-9a-fA-F]{0,6})|([a-zA-Z]+)$")
+        private val selectionItemPattern = Regex("^([^@]+)@([^@]+)$")
+
+        private class IntentExtrasContainer(
+            val appWidgetId: Int,
+            val launchedOnWidgetClicked: Boolean
+        ) {
+            companion object {
+                fun parse(extras: Bundle?): IntentExtrasContainer {
                     return if (extras == null) {
                         IntentExtrasContainer(
                             AppWidgetManager.INVALID_APPWIDGET_ID,

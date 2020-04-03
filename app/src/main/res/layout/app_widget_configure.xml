@@ -29,169 +29,221 @@ SOFTWARE.
     android:orientation="vertical"
     android:padding="@dimen/widget_margin">
 
-    <FrameLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/configBorderColor"
-        android:padding="@dimen/config_frame_border_width">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/configForegroundColor"
             android:orientation="vertical">
 
-            <TextView
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/config_view_margin"
-                android:text="@string/config_displayexamplebox_label"
-                android:textStyle="bold" />
-
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="@dimen/config_view_margin"
-                android:background="@color/configLightFrameBorderColor"
+                android:background="@color/configBorderColor"
                 android:padding="@dimen/config_frame_border_width">
 
                 <LinearLayout
-                    android:id="@+id/config_preview_box"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/configForegroundColor"
-                    android:orientation="vertical"
-                    android:padding="@dimen/config_preview_padding">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/config_preview_hourminute_view"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:autoSizeTextType="uniform"
-                            android:textSize="@dimen/config_preview_hourminute_textsize" />
-
-                        <TextView
-                            android:id="@+id/config_preview_second_view"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:autoSizeTextType="uniform"
-                            android:textSize="@dimen/config_preview_second_textsize" />
-                    </LinearLayout>
+                    android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/config_preview_date_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/config_view_margin"
+                        android:text="@string/config_displayexamplebox_label"
+                        android:textStyle="bold" />
+
+                    <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:autoSizeTextType="uniform"
-                        android:textSize="@dimen/config_preview_date_textsize" />
+                        android:layout_margin="@dimen/config_view_margin"
+                        android:background="@color/configLightFrameBorderColor"
+                        android:padding="@dimen/config_frame_border_width">
+
+                        <LinearLayout
+                            android:id="@+id/config_preview_box"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@color/configPreviewLightBackgroundColor"
+                            android:orientation="vertical"
+                            android:padding="@dimen/config_preview_padding">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/config_preview_hourminute_view"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="99:99"
+                                    android:textSize="@dimen/config_preview_hourminute_textsize"
+                                    tools:ignore="HardcodedText" />
+
+                                <TextView
+                                    android:id="@+id/config_preview_second_view"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text=":99"
+                                    android:textSize="@dimen/config_preview_second_textsize"
+                                    tools:ignore="HardcodedText" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/config_preview_date_view"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="Sun, 01 Jan"
+                                android:textSize="@dimen/config_preview_date_textsize"
+                                tools:ignore="HardcodedText" />
+                        </LinearLayout>
+                    </FrameLayout>
                 </LinearLayout>
             </FrameLayout>
 
-            <LinearLayout
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="@dimen/config_space_between_flames" />
+
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="@color/configBorderColor"
+                android:padding="@dimen/config_frame_border_width">
 
-                <Button
-                    android:id="@+id/config_preview_button"
-                    android:layout_width="0dp"
+                <TableLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_margin="@dimen/config_view_margin"
-                    android:layout_weight="1"
-                    android:text="@string/config_preview_button_text" />
+                    android:background="@color/configForegroundColor">
 
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
-            </LinearLayout>
+                    <TableRow>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/config_view_margin"
+                            android:text="@string/config_dateformat_view_label"
+                            android:textStyle="bold" />
+
+                        <EditText
+                            android:id="@+id/config_date_format_view"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/config_view_margin"
+                            android:layout_weight="1"
+                            android:hint="@string/config_dateformat_view_hint"
+                            android:importantForAutofill="no"
+                            android:inputType="text"
+                            tools:ignore="TextFields" />
+                    </TableRow>
+
+                    <TableRow>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/config_view_margin"
+                            android:text="@string/config_foreground_color_view_label"
+                            android:textStyle="bold" />
+
+                        <EditText
+                            android:id="@+id/config_foreground_color_view"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/config_view_margin"
+                            android:layout_weight="1"
+                            android:hint="@string/config_foreground_color_view_hint"
+                            android:importantForAutofill="no"
+                            android:inputType="textVisiblePassword" />
+                    </TableRow>
+
+                    <TableRow>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_margin="@dimen/config_view_margin"
+                            android:text="@string/config_timezone_view_label"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <Spinner
+                                android:id="@+id/config_timesone_name"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:entries="@array/config_timezone_name_selection_items" />
+
+                            <LinearLayout
+                                android:id="@+id/config_timesone_by_number_box"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:fontFamily="monospace"
+                                    android:text="@string/config_timezone_gmt_label" />
+
+                                <NumberPicker
+                                    android:id="@+id/config_timesone_hour"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:fontFamily="monospace"
+                                    android:text="@string/appwidget_time_separater" />
+
+                                <NumberPicker
+                                    android:id="@+id/config_timesone_minute"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </TableRow>
+
+                    <TableRow>
+
+                        <Button
+                            android:id="@+id/config_reset_button"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_margin="@dimen/config_view_margin"
+                            android:layout_weight="0.5"
+                            android:text="@string/config_reset_button_text" />
+
+                        <Space
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="0.5" />
+                    </TableRow>
+                </TableLayout>
+            </FrameLayout>
         </LinearLayout>
-    </FrameLayout>
-
-    <Space
-        android:layout_width="0dp"
-        android:layout_height="@dimen/config_space_between_flames" />
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/configBorderColor"
-        android:padding="@dimen/config_frame_border_width">
-
-        <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/configForegroundColor">
-
-            <TableRow>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/config_view_margin"
-                    android:text="@string/config_dateformatview_label"
-                    android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/config_date_format_view"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/config_view_margin"
-                    android:layout_weight="1"
-                    android:hint="@string/config_dateformatview_hint"
-                    android:importantForAutofill="no"
-                    android:inputType="text"
-                    tools:ignore="TextFields" />
-            </TableRow>
-
-            <TableRow>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/config_view_margin"
-                    android:text="@string/config_foregroundview_label"
-                    android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/config_foreground_color_view"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/config_view_margin"
-                    android:layout_weight="1"
-                    android:hint="@string/config_foregroundcolorview_hint"
-                    android:importantForAutofill="no"
-                    android:inputType="textVisiblePassword" />
-            </TableRow>
-
-            <TableRow>
-                <Button
-                    android:id="@+id/config_reset_button"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_margin="@dimen/config_view_margin"
-                    android:layout_weight="0.5"
-                    android:text="@string/config_reset_button_text" />
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="0.5" />
-            </TableRow>
-        </TableLayout>
-    </FrameLayout>
-
-    <Space
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+    </ScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -202,16 +254,29 @@ SOFTWARE.
         <Button
             android:id="@+id/config_cancel_button"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
             android:layout_margin="@dimen/config_view_margin"
             android:layout_weight="1"
             android:text="@string/config_cancel_button_text"
+            tools:ignore="ButtonStyle" />
+
+
+        <Button
+            android:id="@+id/config_preview_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/config_view_margin"
+            android:layout_weight="1"
+            android:text="@string/config_preview_button_text"
             tools:ignore="ButtonStyle" />
 
         <Button
             android:id="@+id/config_ok_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_margin="@dimen/config_view_margin"
             android:layout_weight="1"
             android:text="@string/config_add_widget_button_text"

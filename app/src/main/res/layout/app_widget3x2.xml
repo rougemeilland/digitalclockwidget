@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/AppWidgetRootView"
     android:layout_width="@dimen/widget3x2_width"
     android:layout_height="@dimen/widget3x2_height"
@@ -32,31 +33,40 @@ SOFTWARE.
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal">
+
         <TextView
             android:id="@+id/HourView"
             android:layout_width="@dimen/widget3x2_hourview_width"
             android:layout_height="@dimen/widget3x2_hourminuteview_height"
-            android:autoSizeTextType="uniform"
+            android:layout_gravity="center_vertical"
             android:fontFamily="sans-serif-medium"
             android:gravity="bottom|end"
-            android:maxLines="1"/>
+            android:maxLines="1"
+            android:text="99"
+            android:textSize="56sp"
+            tools:ignore="HardcodedText" />
+
         <TextView
             android:id="@+id/HourMinuteDelimiterView"
             android:layout_width="@dimen/widget3x2_mminuteview_delimiter_width"
             android:layout_height="@dimen/widget3x2_hourminuteview_height"
-            android:autoSizeTextType="uniform"
+            android:layout_gravity="center"
             android:fontFamily="sans-serif"
-            android:maxLines="1"
             android:gravity="center|bottom"
-            android:text="@string/appwidget_time_separater" />
+            android:maxLines="1"
+            android:text="@string/appwidget_time_separater"
+            android:textSize="56sp" />
         <TextView
             android:id="@+id/MinuteView"
             android:layout_width="@dimen/widget3x2_minuteview_width"
             android:layout_height="@dimen/widget3x2_hourminuteview_height"
-            android:autoSizeTextType="uniform"
+            android:layout_gravity="center_vertical"
             android:fontFamily="sans-serif-medium"
             android:gravity="start|bottom"
-            android:maxLines="1"/>
+            android:maxLines="1"
+            android:text="99"
+            android:textSize="56sp"
+            tools:ignore="HardcodedText" />
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="wrap_content"
@@ -66,26 +76,31 @@ SOFTWARE.
                 android:id="@+id/MinuteSecondDelimiterView"
                 android:layout_width="@dimen/widget3x2_secondview_delimiter_width"
                 android:layout_height="@dimen/widget3x2_secondview_height"
-                android:autoSizeTextType="uniform"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center|bottom"
                 android:maxLines="1"
-                android:text="@string/appwidget_time_separater" />
+                android:text="@string/appwidget_time_separater"
+                android:textSize="30sp" />
             <TextView
                 android:id="@+id/SecondView"
                 android:layout_width="@dimen/widget3x2_secondview_width"
                 android:layout_height="@dimen/widget3x2_secondview_height"
-                android:autoSizeTextType="uniform"
+                android:layout_gravity="center_vertical"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="start|bottom"
-                android:maxLines="1"/>
+                android:maxLines="1"
+                android:text="99"
+                android:textSize="30sp"
+                tools:ignore="HardcodedText" />
         </LinearLayout>
     </LinearLayout>
     <TextView
         android:id="@+id/DateView"
         android:layout_width="@dimen/widget3x2_dateview_width"
         android:layout_height="@dimen/widget3x2_dateview_height"
-        android:autoSizeTextType="uniform"
         android:fontFamily="sans-serif-medium"
-        android:gravity="center_horizontal"/>
+        android:gravity="center_horizontal"
+        android:text="Sun, 01 Jan"
+        android:textSize="28sp"
+        tools:ignore="HardcodedText" />
 </LinearLayout>

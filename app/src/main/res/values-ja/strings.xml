@@ -25,16 +25,16 @@ SOFTWARE.
 <resources>
     <string name="app_name">デジタル時計</string>
     <string name="default_date_format">M月dd日(E)</string>
-    <string name="config_dateformatview_label">日付の形式</string>
+    <string name="config_dateformat_view_label">日付の形式</string>
     <string name="config_add_widget_button_text">ウィジェットを追加</string>
     <string name="config_ok_button_text">OK</string>
     <string name="config_cancel_button_text">キャンセル</string>
-    <string name="config_foregroundview_label">文字の色</string>
+    <string name="config_foreground_color_view_label">文字の色</string>
     <string name="config_preview_button_text">確認する</string>
     <string name="config_reset_button_text">初期値に戻す</string>
     <string name="config_foreground_color_error_text">色コードを入力してください 例) &quot;#ffdd55&quot;</string>
-    <string name="config_foregroundcolorview_hint">例) #ffdd55</string>
-    <string name="config_dateformatview_hint">例) M月dd日(E)</string>
+    <string name="config_foreground_color_view_hint">例) #87CEEB または skyblue など</string>
+    <string name="config_dateformat_view_hint">例) M月dd日(E)</string>
     <string name="config_date_format_error_text">日付の形式を入力してください 例） &quot;M月dd日(E)&quot;</string>
     <string name="config_displayexamplebox_label">表示サンプル</string>
     <string name="global_config_action_selection_view_label">ウィジェットをタッチしたときの動作</string>
@@ -43,4 +43,16 @@ SOFTWARE.
     <string name="global_config_cancel_button_text">キャンセル</string>
     <string name="global_config_ok_button_text">OK</string>
     <string name="global_config_action_selection_warning_view_text">複数のウィジェットが表示されている場合、この設定を変更するとすべてのウィジェットに変更が適用されます。</string>
+    <string name="config_timezone_view_label">タイムゾーン</string>
+    <string name="config_timezone_gmt_label">GMT</string>
+    <string-array name="config_timezone_name_selection_items">
+        <item>-@システムのデフォルト</item>
+        <item>GMT@グリニッジ標準時(GMT)</item>
+        <item>Asia/Tokyo@日本標準時(JST)</item>
+        <item>America/New_York@アメリカ東部標準時(EST)</item>
+        <item>America/Los_Angeles@アメリカ太平洋標準時(PST)</item>
+        <item>Europe/Berlin@中央ヨーロッパ標準時(CET)</item>
+        <item>Europe/Lisbon@西ヨーロッパ標準時(WET)</item>
+        <item>*@GMTとの時差を入力する</item>
+    </string-array>
 </resources>

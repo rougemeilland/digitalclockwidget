@@ -35,13 +35,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.widget.RemoteViews
-import java.time.LocalDateTime
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 
-// TODO("minSdkVersion を下げる。サポートライブラリが使えるか調べる")
-// TODO("参考：https://teratail.com/questions/94099")
-// TODO("参考：https://developer.android.com/studio/publish/versioning?hl=ja")
+// TODO("Log.isLoggable(TAG, Log.DEBUG)でチェックしてからログを出力すると、端末でログ出力の設定をしない限りログが出力されないのでパフォーマンス的に有利らしい")
+// TODO("ウィジェット毎に採用しているタイムゾーンの名前を簡略名でもいいから常時表示できないか？ レイアウト依存でもOK")
 
 open class AppWidget : AppWidgetProvider() {
     // 【重要】 AppWidgetProvider のコンストラクタが開発者が通常意図しないタイミングで呼ばれることがある
@@ -66,7 +62,13 @@ open class AppWidget : AppWidgetProvider() {
             val views = getRemoteViews(context, appWidgetManager, appWidgetId)
 
             // 第4パラメタを POST_DELAY_TASK にするのは onCreate での1回だけ
-            updateAppWidget(context, appWidgetManager, views, state, UpdateAppWidgetFlags.POST_DELAY_TASK)
+            updateAppWidget(
+                context,
+                appWidgetManager,
+                views,
+                state,
+                UpdateAppWidgetFlags.POST_DELAY_TASK
+            )
         }
     }
 
@@ -121,7 +123,13 @@ open class AppWidget : AppWidgetProvider() {
             val views = getRemoteViews(context, appWidgetManager, appWidgetId)
 
             // 第4パラメタを POST_DELAY_TASK にするのは onCreate での1回だけ
-            updateAppWidget(context, appWidgetManager, views, appWidgetState, UpdateAppWidgetFlags.REDRAW_FORCELY)
+            updateAppWidget(
+                context,
+                appWidgetManager,
+                views,
+                appWidgetState,
+                UpdateAppWidgetFlags.REDRAW_FORCELY
+            )
         }
 
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
@@ -164,7 +172,13 @@ open class AppWidget : AppWidgetProvider() {
                 val views = getRemoteViews(context, appWidgetManager, appWidgetId)
 
                 // 第4パラメタを POST_DELAY_TASK にするのは onCreate での1回だけ
-                updateAppWidget(context, appWidgetManager, views, appWidgetState, UpdateAppWidgetFlags.REDRAW_FORCELY)
+                updateAppWidget(
+                    context,
+                    appWidgetManager,
+                    views,
+                    appWidgetState,
+                    UpdateAppWidgetFlags.REDRAW_FORCELY
+                )
             }
             AppWidgetAction.ONCLICKED_WIDGET.actionName -> {
                 // ウィジェットがクリックされた場合
@@ -195,16 +209,14 @@ open class AppWidget : AppWidgetProvider() {
         }
     }
 
-    private fun onTouchWidget(context: Context, appWidgetId: Int)
-    {
+    private fun onTouchWidget(context: Context, appWidgetId: Int) {
         when (AppWidgetGlobalSetting.load(context).appWidgetClickAction.also {
             Log.d(
                 javaClass.canonicalName + ".onTouchWidget()",
                 "appWidgetId=" + appWidgetId + "AppWidgetGlobalSetting.appWidgetClickAction=" + it.id
             )
-        })
-        {
-            AppWidgetClickAction.LAUNCH_GOOGLE_CLOCK_APPLICATION-> {
+        }) {
+            AppWidgetClickAction.LAUNCH_GOOGLE_CLOCK_APPLICATION -> {
                 launchGoogleClock(context, appWidgetId)
             }
             else -> {
@@ -228,11 +240,9 @@ open class AppWidget : AppWidgetProvider() {
                 val intent = Intent(googleClockAppInfo.actionName)
                 googleClockAppInfo.categories.forEach { intent.addCategory(it) }
                 intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
-                intent.setComponent(
-                    ComponentName(
-                        googleClockAppInfo.packageName,
-                        googleClockAppInfo.className
-                    )
+                intent.component = ComponentName(
+                    googleClockAppInfo.packageName,
+                    googleClockAppInfo.className
                 )
                 PendingIntent.getActivity(context, 0, intent, 0).send()
             } catch (ex: ActivityNotFoundException) {
@@ -252,8 +262,12 @@ open class AppWidget : AppWidgetProvider() {
         val intent = Intent(context, AppWidgetConfigureActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.putExtra(AppWidgetExtrasKey.ON_CLICKED.keyName, true)
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId) // これを設定しないと、 AppWidgetConfigureActivity での intent.extras が null になってしまう
-        PendingIntent.getActivity(context, 0, intent, 0).send() // 第2パラメタが appWidgetId でなくても AppWidgetConfigureActivity は正常に表示される
+        intent.putExtra(
+            AppWidgetManager.EXTRA_APPWIDGET_ID,
+            appWidgetId
+        ) // これを設定しないと、 AppWidgetConfigureActivity での intent.extras が null になってしまう
+        PendingIntent.getActivity(context, 0, intent, 0)
+            .send() // 第2パラメタが appWidgetId でなくても AppWidgetConfigureActivity は正常に表示される
     }
 
     // ウィジェットの単一インスタンスの表示の更新
@@ -265,11 +279,20 @@ open class AppWidget : AppWidgetProvider() {
         flags: UpdateAppWidgetFlags
     ) {
         try {
-            //setOnClickAction(context, views, appWidgetState.appWidgetId)
-            updateDigitalClockWidget(context, appWidgetManager, views, appWidgetState, flags)
+            updateDigitalClockWidget(
+                context,
+                appWidgetManager,
+                views,
+                AppWidgetSetting.load(context, appWidgetState.appWidgetId),
+                appWidgetState,
+                flags
+            )
             appWidgetManager.updateAppWidget(appWidgetState.appWidgetId, views)
         } catch (ex: Exception) {
-            Log.e(javaClass.canonicalName + ".updateAppWidget()", "Caused exception: message=" + ex.message + ", appWidgetId=" + appWidgetState.appWidgetId)
+            Log.e(
+                javaClass.canonicalName + ".updateAppWidget()",
+                "Caused exception: message=" + ex.message + ", appWidgetId=" + appWidgetState.appWidgetId
+            )
         }
 
     }
@@ -279,12 +302,14 @@ open class AppWidget : AppWidgetProvider() {
         context: Context,
         appWidgetManager: AppWidgetManager,
         views: RemoteViews,
+        appWidgetSetting: AppWidgetSetting,
         appWidgetState: AppWidgetState,
         flags: UpdateAppWidgetFlags
     ) {
         // 現在時刻の取得
-        val nowDateTime = LocalDateTime.now()
-        val currentSecond = nowDateTime.toEpochSecond(ZoneOffset.UTC)
+        val nowDateTime =
+            AppWidgetDateTime.now(appWidgetSetting.dateFormat, appWidgetSetting.timeZone)
+        val currentSecond = nowDateTime.totalSecond
 
         // 前回実行時刻と現在時刻により判定
         val intervalMillisecond: Long
@@ -300,10 +325,7 @@ open class AppWidget : AppWidgetProvider() {
             // 100ms後に再試行するようインターバルタイムを設定する
             intervalMillisecond = 100
             // REDRAW_FORCELY フラグが指定されていない限り、ビューは更新しない
-            if (flags.contains(UpdateAppWidgetFlags.REDRAW_FORCELY))
-                doUpdateAppWidget = true
-            else
-                doUpdateAppWidget = false
+            doUpdateAppWidget = flags.contains(UpdateAppWidgetFlags.REDRAW_FORCELY)
 
         } else {
             // 現在時刻が前回実行時刻と比べて秒単位で秒数が変化している場合
@@ -314,9 +336,8 @@ open class AppWidget : AppWidgetProvider() {
         }
         if (doUpdateAppWidget) {
             updateDigitalClockWidgetViews(
-                context,
-                appWidgetState.appWidgetId,
                 views,
+                appWidgetSetting,
                 nowDateTime
             )
         }
@@ -327,6 +348,11 @@ open class AppWidget : AppWidgetProvider() {
             val updateAppWidgetRunnable = Runnable {
                 // 時間が経過した後での実行なので、 appWidgetState と rRemoteViews を再取得する
                 val newAppWidgetState = AppWidgetState.load(context, appWidgetState.appWidgetId)
+                Log.d(
+                    javaClass.simpleName + ".updateDigitalClock()",
+                    "Continue task: appWidgetId=" + (newAppWidgetState?.appWidgetId
+                        ?: AppWidgetManager.INVALID_APPWIDGET_ID)
+                )
                 val newRemoteViews =
                     getRemoteViews(context, appWidgetManager, appWidgetState.appWidgetId)
                 if (newAppWidgetState != null) {
@@ -337,12 +363,12 @@ open class AppWidget : AppWidgetProvider() {
                         newAppWidgetState,
                         flags.except(UpdateAppWidgetFlags.REDRAW_FORCELY) // REDRAW_FORCELY は引き継がない
                     )
-                /*
-                Log.d(
-                    javaClass.canonicalName + ".updateAppWidget()",
-                    "Continue task: appWidgetSize=" + appWidgetSize + ", appWidgetId=" + appWidgetState.appWidgetId
-                )
-                */
+                    /*
+                    Log.d(
+                        javaClass.canonicalName + ".updateDigitalClockWidget()",
+                        "Continue task: appWidgetId=" + newAppWidgetState.appWidgetId
+                    )
+                     */
                 }
             }
             handler.postDelayed(updateAppWidgetRunnable, intervalMillisecond)
@@ -353,21 +379,21 @@ open class AppWidget : AppWidgetProvider() {
 
         // appWidgetState を保存する
         appWidgetState.save(context)
+        Log.d(
+            javaClass.simpleName + ".updateDigitalClock()",
+            "Saved state: appWidgetId=" + appWidgetState.appWidgetId
+        )
     }
 
     internal fun updateDigitalClockWidgetViews(
-        context: Context,
-        appWidgetId: Int,
         views: RemoteViews,
-        dateTime: LocalDateTime
+        appWidgetSetting: AppWidgetSetting,
+        dateTime: AppWidgetDateTime
     ) {
-        // 環境設定値の取得
-        val appWidgetSetting = AppWidgetSetting.load(context, appWidgetId)
-
         // 時の設定
         val formattedHour = "%02d".format(dateTime.hour)
         views.setTextViewText(R.id.HourView, formattedHour)
-        views.setTextColor(R.id.HourView,  appWidgetSetting.foregroundColorCode)
+        views.setTextColor(R.id.HourView, appWidgetSetting.foregroundColorCode)
 
         // 時と分の区切りの設定
         views.setTextColor(R.id.HourMinuteDelimiterView, appWidgetSetting.foregroundColorCode)
@@ -386,13 +412,15 @@ open class AppWidget : AppWidgetProvider() {
         views.setTextColor(R.id.SecondView, appWidgetSetting.foregroundColorCode)
 
         // 日付の設定
-        val dateFormatter = DateTimeFormatter.ofPattern(appWidgetSetting.dateFormat)
-        val formattedDate = dateTime.format(dateFormatter)
-        views.setTextViewText(R.id.DateView, formattedDate)
+        views.setTextViewText(R.id.DateView, dateTime.dateString)
         views.setTextColor(R.id.DateView, appWidgetSetting.foregroundColorCode)
     }
 
-    private fun getRemoteViews(context:Context, appWidgetManager: AppWidgetManager, appWidgetId: Int): RemoteViews {
+    private fun getRemoteViews(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetId: Int
+    ): RemoteViews {
         // Widget のサイズ情報を取得する
         val options = appWidgetManager.getAppWidgetOptions(appWidgetId)
 
@@ -422,10 +450,12 @@ open class AppWidget : AppWidgetProvider() {
                     0
                 ) // 第2パラメタに appWidgetId を指定しないと onReceive が呼び出されない
                 remoteViews.setOnClickPendingIntent(R.id.AppWidgetRootView, pendingIntent)
+                /*
                 Log.d(
                     javaClass.canonicalName + ".getRemoteViews()",
                     "Registered action: appWidgetId=" + appWidgetId + ", packageName=" + intent.component?.packageName + ", className=" + intent.component?.className + ", actionName=" + intent.action
                 )
+                */
             }
         }
     }

@@ -54,8 +54,10 @@ class AppWidgetState(
             appWidgetId: Int
         ): AppWidgetState? {
             val prefs = context.getSharedPreferences(PREFS_NAME, 0)
-            val previousSecond =
-                prefs.getLong(PREF_KEY_PREVIOUS_SECOND + appWidgetId, 0)
+            val previousSecondKey = PREF_KEY_PREVIOUS_SECOND + appWidgetId
+            if (!prefs.contains(previousSecondKey))
+                return null
+            val previousSecond = prefs.getLong(previousSecondKey, 0)
             return AppWidgetState(appWidgetId, previousSecond)
         }
 

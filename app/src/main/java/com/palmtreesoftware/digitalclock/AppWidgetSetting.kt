@@ -28,7 +28,7 @@ import android.content.Context
 import android.os.Build
 
 class AppWidgetSetting(
-    val appWidgetId: Int,
+    private val appWidgetId: Int,
     val dateFormat: String,
     val foregroundColorName: String,
     val foregroundColorCode: Int,

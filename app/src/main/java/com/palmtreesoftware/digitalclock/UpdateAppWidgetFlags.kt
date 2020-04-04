@@ -28,8 +28,6 @@ class UpdateAppWidgetFlags private constructor(
     private val bits: Int
 ) {
     companion object {
-        val NONE = UpdateAppWidgetFlags(0b0000)
-
         val POST_DELAY_TASK = UpdateAppWidgetFlags(0b0001)
         val REDRAW_FORCELY = UpdateAppWidgetFlags(0b00010)
     }

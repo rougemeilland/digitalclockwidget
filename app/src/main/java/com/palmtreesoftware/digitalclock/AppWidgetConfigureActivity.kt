@@ -35,7 +35,6 @@ import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.NumberPicker
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.app_widget_configure.*
 
@@ -55,10 +54,11 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         setResult(RESULT_CANCELED)
         setContentView(R.layout.app_widget_configure)
 
-        Log.d(
-            javaClass.canonicalName + ".onCreate()",
-            "Started"
-        )
+        if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+            Log.d(
+                javaClass.simpleName,
+                "onCreate"
+            )
 
         timeZoneNameSelectionItems =
             SelectionItem.fromResource(this, R.array.config_timezone_name_selection_items)
@@ -67,10 +67,11 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        Log.d(
-            javaClass.canonicalName + ".onDestroy()",
-            "Started"
-        )
+        if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+            Log.d(
+                javaClass.simpleName,
+                "onDestroy"
+            )
         cleanUpActivity()
         super.onDestroy()
     }
@@ -80,14 +81,19 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
         // この Activity のインスタンスが、別の intent のために再利用されたことを検出した
 
+        // 以前の intent.extras から取得した appWidgetId
         val previousAppWidgetId =
-            AppWidget.parseExterasAsAppWidgetId(getIntent().extras) // 以前の intent.extras から取得した appWidgetId
+            AppWidget.parseExterasAsAppWidgetId(getIntent().extras)
+
+        // 新たな intent.extras から取得した appWidgetId
         val currentAppWidgetId =
-            AppWidget.parseExterasAsAppWidgetId(intent?.extras) // 新たな intent.extras から取得した appWidgetId
-        Log.d(
-            javaClass.canonicalName + ".onNewIntent()",
-            "Started: previousAppWidgetId=" + previousAppWidgetId + ", currentAppWidgetId=" + currentAppWidgetId
-        )
+            AppWidget.parseExterasAsAppWidgetId(intent?.extras)
+
+        if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+            Log.d(
+                javaClass.simpleName,
+                "onNewIntent: previousAppWidgetId=$previousAppWidgetId, currentAppWidgetId=$currentAppWidgetId"
+            )
 
         // 以前の intent に関する設定をクリアする
         cleanUpActivity()
@@ -109,22 +115,30 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         // 既に表示されている AppWidgetConfigureActivity の onStart() が呼び出されて再利用される
         super.onStart()
 
-        Log.d(
-            javaClass.canonicalName + ".onStart()",
-            "Started"
-        )
+        if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+            Log.d(
+                javaClass.simpleName,
+                "onStart"
+            )
     }
 
     private fun startUpActivity(intent: Intent?) {
+        if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+            Log.d(
+                javaClass.simpleName,
+                "startUpActivity"
+            )
+
         // intent.extras から appWidgetId を取得する
         val extrasContainer = IntentExtrasContainer.parse(intent?.extras)
 
         // appWidgetId が正しくない場合は Activity を終了する
         if (extrasContainer.appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-            Log.d(
-                javaClass.canonicalName + ".StartUpActivity()",
-                "Started (Detected bad appWidgetId)"
-            )
+            if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+                Log.d(
+                    javaClass.simpleName,
+                    "startUpActivity: Detected bad appWidgetId"
+                )
             // Avtivity の終了とともに、タスク履歴から自身を消去する
             // (誤ってタスク履歴から再実行されることを防ぐため。finish() を使用するとタスク履歴に残ったままになってしまう。)
             finishAndRemoveTask()
@@ -132,10 +146,12 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         }
 
         appWidgetId = extrasContainer.appWidgetId
-        Log.d(
-            javaClass.canonicalName + ".StartUpActivity()",
-            "Started: appWidgetId=" + appWidgetId
-        )
+        if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+            Log.d(
+                javaClass.simpleName,
+                "startUpActivity: appWidgetId=$appWidgetId"
+            )
+
         // この Activity が Widget のクリックにより表示された場合は、一部の View の表示を変える
         if (extrasContainer.launchedOnWidgetClicked) {
             // "ADD_WIDGET" ボタンの名前を "OK" に変更する
@@ -143,7 +159,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         }
 
         // Activity の表示内容を初期化する
-        AppWidgetSetting.load(this@AppWidgetConfigureActivity, appWidgetId).let {
+        AppWidgetSetting.load(this, appWidgetId).let {
             initializeForm(it)
             exampleViewState.setSetting(it)
             drawExampleView(it)
@@ -192,33 +208,24 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
         // "OK" ボタンのクリックハンドラを登録する
         config_ok_button.setOnClickListener {
-            val context = this@AppWidgetConfigureActivity
+            if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+                Log.d(
+                    javaClass.simpleName,
+                    "StartUpActivity: Clicked OK button: appWidgetId=$appWidgetId"
+                )
 
-            Log.d(
-                javaClass.canonicalName + ".StartUpActivity()",
-                "Clicked ok button: appWidgetId=" + appWidgetId
-            )
-
+            // 入力値の正当性を検証する
             val appWidgetSetting = validateForm()
             if (appWidgetSetting != null) {
-                appWidgetSetting.save(context)
+                // 入力値がすべて正しかった場合
 
-                /*
-                // 以下の理由から、ここからの描画指示は省略する
+                // 入力値を保存する
+                appWidgetSetting.save(this)
+
+                // 本来の AppWidget のサンプルプログラムであればここで直接 Widget の画面の更新を行うが、
+                // 以下の理由から、ここでは行わない
                 // ・Widget の layout が複数あり、 RemoteViews の第2パラメタを解決できないため
                 // ・以降に実行する requestToRefreshWidgetInstance(appWidgetId) で別途 Widget の再描画の指示を出しているため
-                val appWidgetManager = AppWidgetManager.getInstance(context)
-                RemoteViews(context.packageName, R.layout.????????).also { views ->
-                    val nowDateTime = LocalDateTime.now();
-                    updateDigitalClockWidgetViews(
-                        context,
-                        appWidgetId,
-                        views,
-                        nowDateTime
-                    )
-                    appWidgetManager.updateAppWidget(appWidgetId, views)
-                }
-               */
 
                 // Widget に通知する intent を作成する
                 val resultValue = Intent().apply {
@@ -237,10 +244,11 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
 
         // "CANCEL" ボタンのクリックハンドラを登録する
         config_cancel_button.setOnClickListener {
-            Log.d(
-                javaClass.canonicalName + ".StartUpActivity()",
-                "Clicked cancel button: appWidgetId=" + appWidgetId
-            )
+            if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+                Log.d(
+                    javaClass.simpleName,
+                    "StartUpActivity: Clicked Cancel button: appWidgetId=$appWidgetId"
+                )
 
             // Widget に通知する intent を作成する
             val resultValue = Intent().apply {
@@ -258,10 +266,11 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
     }
 
     private fun cleanUpActivity() {
-        Log.d(
-            javaClass.canonicalName + ".CleanUpActivity()",
-            "Started: appWidgetId=" + appWidgetId
-        )
+        if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+            Log.d(
+                javaClass.simpleName,
+                "CleanUpActivity: appWidgetId=$appWidgetId"
+            )
 
         // サンプル表示の自動再描画を停止する
         exampleViewState.stop()
@@ -284,20 +293,22 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         // タイムゾーンの時差(時)の選択項目を設定する
         config_timesone_hour.maxValue = AppWidgetTimeZone.maxTimeZoneHour
         config_timesone_hour.minValue = AppWidgetTimeZone.minTimeZoneHour
-        config_timesone_hour.setFormatter(object : NumberPicker.Formatter {
-            override fun format(value: Int): String {
-                return AppWidgetTimeZone.getHourStringOnForm("%+03d", value)
-            }
-        })
+        config_timesone_hour.setFormatter { value ->
+            AppWidgetTimeZone.getHourStringOnForm(
+                "%+03d",
+                value
+            )
+        }
 
         // タイムゾーンの時差(分)の選択項目を設定する
         config_timesone_minute.maxValue = AppWidgetTimeZone.maxTimeZoneMinute
         config_timesone_minute.minValue = AppWidgetTimeZone.minTimeZoneMinute
-        config_timesone_minute.setFormatter(object : NumberPicker.Formatter {
-            override fun format(value: Int): String {
-                return AppWidgetTimeZone.getMinuteStringOnForm("%02d", value)
-            }
-        })
+        config_timesone_minute.setFormatter { value ->
+            AppWidgetTimeZone.getMinuteStringOnForm(
+                "%02d",
+                value
+            )
+        }
 
         // 表示サンプルのデータを初期化する
         exampleViewState.setSetting(appWidgetSetting)
@@ -335,7 +346,7 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         val dateFormat = config_date_format_view.text.toString().trim()
         val dateFormatValidity =
             when {
-                !dateFormat.isEmpty() -> {
+                dateFormat.isNotEmpty() -> {
                     true.also { config_date_format_view.error = null }
                 }
                 else -> {
@@ -364,17 +375,31 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
             getSelectedItem(timeZoneNameSelectionItems, config_timesone_name.selectedItemPosition)
         return when {
             !dateFormatValidity -> {
-                null.also { config_date_format_view.requestFocus() }
+                null.also {
+                    if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+                        Log.d(
+                            javaClass.simpleName,
+                            "validateForm: Bad date format"
+                        )
+                    config_date_format_view.requestFocus()
+                }
             }
             !foregroundColorValidity -> {
-                null.also { config_foreground_color_view.requestFocus() }
+                null.also {
+                    if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+                        Log.d(
+                            javaClass.simpleName,
+                            "validateForm: Bad foreground color"
+                        )
+                    config_foreground_color_view.requestFocus()
+                }
             }
             else -> {
-                assert(parsedForegroundColorCode.success)
-                Log.d(
-                    javaClass.canonicalName + ".validateForm()",
-                    "Validating: selectedTimeZoneItem=" + selectedTimeZoneItem.id + ", config_timesone_hour.Value=" + config_timesone_hour.value + ", config_timesone_minute.value=" + config_timesone_minute.value
-                )
+                if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+                    Log.d(
+                        javaClass.simpleName,
+                        "validateForm: Validating: selectedTimeZone.id=${selectedTimeZoneItem.id}, config_timesone_hour.Value=${config_timesone_hour.value}, config_timesone_minute.value=${config_timesone_minute.value}"
+                    )
                 AppWidgetSetting(
                     appWidgetId,
                     dateFormat,
@@ -385,10 +410,11 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
                         config_timesone_hour.value,
                         config_timesone_minute.value
                     ).also {
-                        Log.d(
-                            javaClass.canonicalName + ".validateForm()",
-                            "Validated (OK): timeZoneId=" + it.id
-                        )
+                        if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+                            Log.d(
+                                javaClass.simpleName,
+                                "validateForm: Validated (OK): timeZoneId=" + it.id
+                            )
                     }
                 )
             }
@@ -409,6 +435,8 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
         config_preview_box.setBackgroundColor(
             appWidgetSetting.foregroundColorCode.let { foregroundColorCode ->
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    // 文字の色の大体の明るさを計算する
+                    // ※ RGB要素を分解して足し合わせ、平均以上かどうかをチェックしているだけ
                     Color.valueOf(foregroundColorCode).let { foregroundColor ->
                         if (foregroundColor.red() + foregroundColor.green() + foregroundColor.blue() >=
                             (foregroundColor.colorSpace.getMinValue(0) + foregroundColor.colorSpace.getMaxValue(
@@ -433,49 +461,22 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
                         }
                     }
                 } else {
-                    Log.d(
-                        javaClass.canonicalName + ".drawExampleView()",
-                        "colorCode=" + String.format("#%06x", foregroundColorCode)
-                    )
-                    Log.d(
-                        javaClass.canonicalName + ".drawExampleView()",
-                        "r=" + (foregroundColorCode.shr(16) and 0xff)
-                    )
-                    Log.d(
-                        javaClass.canonicalName + ".drawExampleView()",
-                        "g=" + (foregroundColorCode.shr(8) and 0xff)
-                    )
-                    Log.d(
-                        javaClass.canonicalName + ".drawExampleView()",
-                        "b=" + (foregroundColorCode and 0xff)
-                    )
+                    // 文字の色の大体の明るさを計算する
+                    // ※ RGB要素を分解して足し合わせ、平均以上かどうかをチェックしているだけ
                     if ((foregroundColorCode.shr(16) and 0xff) + (foregroundColorCode.shr(8) and 0xff) + (foregroundColorCode and 0xff) >= 255 * 3 / 2) {
                         // 文字の色が比較的明るい場合
 
                         // 背景色を暗くする
-                        0xff333333.toInt().also {
-                            Log.d(
-                                javaClass.canonicalName + ".drawExampleView()",
-                                "backgroundColor=" + String.format("#%06x", it)
-                            )
-                        }
+                        // ※ このバージョンの SDK だとカラーリソースが使用できないため、やむを得ずカラーコードをハードコードしている
+                        0xff333333.toInt()
                     } else {
                         // 文字の色が比較的暗い場合
 
                         // 背景色を明るくする
-                        0xffdddddd.toInt().also {
-                            Log.d(
-                                javaClass.canonicalName + ".drawExampleView()",
-                                "backgroundColor=" + String.format("#%06x", it)
-                            )
-                        }
+                        // ※ このバージョンの SDK だとカラーリソースが使用できないため、やむを得ずカラーコードをハードコードしている
+                        0xffdddddd.toInt()
                     }
                 }
-            }.also {
-                Log.d(
-                    javaClass.canonicalName + ".drawExampleView()",
-                    "backgroundColor=" + String.format("#%06x", it)
-                )
             })
 
         // 現在時刻の設定
@@ -496,10 +497,11 @@ class AppWidgetConfigureActivity : AppCompatActivity() {
     // appWidgetId の ID を持つ Widget のインスタンスに REFRESH_WIDGET メッセージを送信する
     private fun requestToRefreshWidgetInstance(appWidgetId: Int) {
         Intent(this, AppWidget::class.java).also { intent ->
-            Log.d(
-                javaClass.canonicalName + ".requestToRefresh...",
-                "Clicked cancel button: appWidgetId=" + appWidgetId
-            )
+            if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+                Log.d(
+                    javaClass.simpleName,
+                    "requestToRefreshWidgetInstance: appWidgetId=$appWidgetId"
+                )
 
             intent.action = AppWidgetAction.REFRESH_WIDGET.actionName
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)

@@ -44,7 +44,8 @@ class AppWidgetGlobalSetting(val appWidgetClickAction: AppWidgetClickAction) {
                 return AppWidgetGlobalSetting(if (actionText == null) {
                     AppWidgetClickAction.LAUNCH_CONFIGURE
                 } else {
-                    AppWidgetClickAction.values().firstOrNull { value -> value.id == actionText } ?: AppWidgetClickAction.LAUNCH_CONFIGURE
+                    AppWidgetClickAction.values().firstOrNull { value -> value.id == actionText }
+                        ?: AppWidgetClickAction.LAUNCH_CONFIGURE
                 })
             }
         }

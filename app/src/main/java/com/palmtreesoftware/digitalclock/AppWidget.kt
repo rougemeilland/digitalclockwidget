@@ -36,7 +36,6 @@ import android.os.Handler
 import android.util.Log
 import android.widget.RemoteViews
 
-// TODO("Log.isLoggable(TAG, Log.DEBUG)でチェックしてからログを出力すると、端末でログ出力の設定をしない限りログが出力されないのでパフォーマンス的に有利らしい")
 // TODO("ウィジェット毎に採用しているタイムゾーンの名前を簡略名でもいいから常時表示できないか？ レイアウト依存でもOK")
 
 open class AppWidget : AppWidgetProvider() {
@@ -54,15 +53,17 @@ open class AppWidget : AppWidgetProvider() {
         appWidgetIds: IntArray
     ) {
         for (appWidgetId in appWidgetIds) {
-            Log.d(
-                javaClass.canonicalName + ".onUpdate()",
-                "Start: appWidgetId=" + appWidgetId
-            )
+            if (Log.isLoggable(javaClass.simpleName, Log.DEBUG)) {
+                Log.d(
+                    javaClass.simpleName,
+                    "onUpdate: appWidgetId=$appWidgetId"
+                )
+            }
             val state = AppWidgetState.get(context, appWidgetId)
-            val views = getRemoteViews(context, appWidgetManager, appWidgetId)
+            val views = this.getRemoteViews(context, appWidgetManager, appWidgetId)
 
             // 第4パラメタを POST_DELAY_TASK にするのは onCreate での1回だけ
-            updateAppWidget(
+            this.updateAppWidget(
                 context,
                 appWidgetManager,
                 views,
@@ -79,25 +80,28 @@ open class AppWidget : AppWidgetProvider() {
         appWidgetIds: IntArray
     ) {
         for (appWidgetId in appWidgetIds) {
-            Log.d(
-                javaClass.canonicalName + ".onDeleted()",
-                "Start: appWidgetId=" + appWidgetId
-            )
+            if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+                Log.d(
+                    javaClass.simpleName,
+                    "onDeleted: appWidgetId=$appWidgetId"
+                )
             val appWidgetState = AppWidgetState.load(context, appWidgetId)
             if (appWidgetState != null) {
                 appWidgetState.delete(context)
-                Log.d(
-                    javaClass.canonicalName + ".onDeleted()",
-                    "appWidgetState deleted: appWidgetId=" + appWidgetId
-                )
+                if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+                    Log.d(
+                        javaClass.simpleName,
+                        "onDeleted: Deleted appWidgetState: appWidgetId=$appWidgetId"
+                    )
             }
             AppWidgetSetting.load(context, appWidgetId).also {
                 it.delete(context)
             }
-            Log.d(
-                javaClass.canonicalName + ".onDeleted()",
-                "appWidgetSetting deleted: appWidgetId=" + appWidgetId
-            )
+            if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+                Log.d(
+                    javaClass.simpleName,
+                    "onDeleted: Deleted appWidgetSetting: appWidgetId=$appWidgetId"
+                )
         }
         super.onDeleted(context, appWidgetIds)
     }
@@ -143,10 +147,11 @@ open class AppWidget : AppWidgetProvider() {
 
         when (intent?.action) {
             AppWidgetAction.REFRESH_WIDGET.actionName -> {
-                Log.d(
-                    javaClass.canonicalName + ".onReceive()",
-                    "Received REFRESH_WIDGET"
-                )
+                if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+                    Log.d(
+                        javaClass.simpleName,
+                        "onReceive: action=${intent.action}"
+                    )
 
                 // ウィジェットの再表示が指示された場合
                 val appWidgetManager = AppWidgetManager.getInstance(context)
@@ -154,21 +159,23 @@ open class AppWidget : AppWidgetProvider() {
                 // アクションの対象の appWidgetId を取得する
                 val appWidgetId = parseExterasAsAppWidgetId(intent.extras)
                 if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-                    Log.d(javaClass.canonicalName + ".onReceive()", "Bad appWidgetId")
+                    if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+                        Log.d(
+                            javaClass.simpleName,
+                            "onReceive: Bad appWidgetId: action=${intent.action}"
+                        )
                     return
                 }
                 val appWidgetState = AppWidgetState.load(context, appWidgetId)
                 if (appWidgetState == null) {
-                    Log.d(
-                        javaClass.canonicalName + ".onReceive()",
-                        "appWidgetState not exists: appWidgetId=" + appWidgetId
-                    )
+                    if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+                        Log.d(
+                            javaClass.simpleName,
+                            "onReceive: appWidgetState not exists: action=${intent.action}"
+                        )
                     return
                 }
-                Log.d(
-                    javaClass.canonicalName + ".onReceive()",
-                    "Update updateAppWidget: appWidgetId=" + appWidgetState.appWidgetId
-                )
+
                 val views = getRemoteViews(context, appWidgetManager, appWidgetId)
 
                 // 第4パラメタを POST_DELAY_TASK にするのは onCreate での1回だけ
@@ -183,38 +190,47 @@ open class AppWidget : AppWidgetProvider() {
             AppWidgetAction.ONCLICKED_WIDGET.actionName -> {
                 // ウィジェットがクリックされた場合
 
-                Log.d(
-                    javaClass.canonicalName + ".onReceive()",
-                    "Received ONCLICKED_WIDGET"
-                )
+                if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+                    Log.d(
+
+                        javaClass.simpleName,
+                        "onReceive: action=${intent.action}"
+                    )
 
                 // アクションの対象の appWidgetId を取得する
                 val appWidgetId = parseExterasAsAppWidgetId(intent.extras)
                 if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-                    Log.d(javaClass.canonicalName + ".onReceive()", "Bad appWidgetId")
+                    if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+                        Log.d(
+                            javaClass.simpleName,
+                            "onReceive: Bad widget id: action=${intent.action}"
+                        )
                     return
                 }
-                Log.d(
-                    javaClass.canonicalName + ".onReceive()",
-                    "Received ONCLICKED_WIDGET: appWidgetId=" + appWidgetId
-                )
+
                 onTouchWidget(context, appWidgetId)
             }
             else -> {
-                Log.d(
-                    javaClass.canonicalName + ".onReceive()",
-                    "Received Unknown action:" + intent?.action
-                )
+                /*
+                if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+                    Log.d(
+
+                        javaClass.simpleName,
+                        "onReceive: Unknown action: action=${intent?.action}"
+                    )
+                 */
             }
         }
     }
 
     private fun onTouchWidget(context: Context, appWidgetId: Int) {
         when (AppWidgetGlobalSetting.load(context).appWidgetClickAction.also {
-            Log.d(
-                javaClass.canonicalName + ".onTouchWidget()",
-                "appWidgetId=" + appWidgetId + "AppWidgetGlobalSetting.appWidgetClickAction=" + it.id
-            )
+            if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+                Log.d(
+
+                    javaClass.simpleName,
+                    "onTouchWidget: appWidgetId=${appWidgetId}, appWidgetClickAction=${it.id}"
+                )
         }) {
             AppWidgetClickAction.LAUNCH_GOOGLE_CLOCK_APPLICATION -> {
                 launchGoogleClock(context, appWidgetId)
@@ -226,17 +242,15 @@ open class AppWidget : AppWidgetProvider() {
     }
 
     private fun launchGoogleClock(context: Context, appWidgetId: Int) {
-        Log.d(
-            javaClass.canonicalName + ".launchGoogleClock()",
-            "Started: appWidgetId=" + appWidgetId
-        )
+        Log.isLoggable(javaClass.simpleName + ".launchGoogleClock", Log.DEBUG)
+        if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+            Log.d(
+
+                javaClass.simpleName,
+                "launchGoogleClock: appWidgetId=$appWidgetId"
+            )
         knownApplicationInfos[googleClockPackageName]?.let { googleClockAppInfo ->
             try {
-                Log.d(
-                    javaClass.canonicalName + ".launchGoogleClock()",
-                    "Creating intent: appWidgetId=" + appWidgetId
-                )
-
                 val intent = Intent(googleClockAppInfo.actionName)
                 googleClockAppInfo.categories.forEach { intent.addCategory(it) }
                 intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
@@ -245,29 +259,43 @@ open class AppWidget : AppWidgetProvider() {
                     googleClockAppInfo.className
                 )
                 PendingIntent.getActivity(context, 0, intent, 0).send()
+                if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+                    Log.d(
+
+                        javaClass.simpleName,
+                        "launchGoogleClock: Posted intent: appWidgetId=$appWidgetId"
+                    )
             } catch (ex: ActivityNotFoundException) {
-                Log.d(
-                    javaClass.canonicalName + ".launchGoogleClock()",
-                    "Not installed google clock application: appWidgetId=" + appWidgetId
-                )
+                if (Log.isLoggable(javaClass.simpleName, Log.ERROR))
+                    Log.e(
+
+                        javaClass.simpleName,
+                        "launchGoogleClock: Not installed (or disabled) google clock application: appWidgetId=$appWidgetId",
+                        ex
+                    )
             }
         }
     }
 
     private fun launchConfigure(context: Context, appWidgetId: Int) {
-        Log.d(
-            javaClass.canonicalName + ".launchConfigure()",
-            "Posting intent for launching configure activity: appWidgetId=" + appWidgetId
-        )
+        if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+            Log.d(
+                javaClass.simpleName,
+                "launchConfigure: Posting intent for launching configure activity: appWidgetId=$appWidgetId"
+            )
         val intent = Intent(context, AppWidgetConfigureActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.putExtra(AppWidgetExtrasKey.ON_CLICKED.keyName, true)
+
+        // これを設定しないと、 AppWidgetConfigureActivity での intent.extras が null になってしまう
         intent.putExtra(
             AppWidgetManager.EXTRA_APPWIDGET_ID,
             appWidgetId
-        ) // これを設定しないと、 AppWidgetConfigureActivity での intent.extras が null になってしまう
+        )
+
+        // 第2パラメタが appWidgetId でなくても AppWidgetConfigureActivity は正常に表示される
         PendingIntent.getActivity(context, 0, intent, 0)
-            .send() // 第2パラメタが appWidgetId でなくても AppWidgetConfigureActivity は正常に表示される
+            .send()
     }
 
     // ウィジェットの単一インスタンスの表示の更新
@@ -289,12 +317,13 @@ open class AppWidget : AppWidgetProvider() {
             )
             appWidgetManager.updateAppWidget(appWidgetState.appWidgetId, views)
         } catch (ex: Exception) {
-            Log.e(
-                javaClass.canonicalName + ".updateAppWidget()",
-                "Caused exception: message=" + ex.message + ", appWidgetId=" + appWidgetState.appWidgetId
-            )
+            if (Log.isLoggable(javaClass.simpleName, Log.ERROR))
+                Log.e(
+                    javaClass.simpleName,
+                    "updateAppWidget: Caused exception: appWidgetId=${appWidgetState.appWidgetId}",
+                    ex
+                )
         }
-
     }
 
     // ウィジェットのビューの更新と次回タスクの起動
@@ -314,27 +343,33 @@ open class AppWidget : AppWidgetProvider() {
         // 前回実行時刻と現在時刻により判定
         val intervalMillisecond: Long
         val doUpdateAppWidget: Boolean
-        if (appWidgetState.previousSecond <= 0) {
-            // 前回実行時刻が未設定の場合
-            // 100ms後に再試行するようインターバルタイムを設定する
-            intervalMillisecond = 100
-            // ビューを更新する
-            doUpdateAppWidget = true
-        } else if (currentSecond == appWidgetState.previousSecond) {
-            // 現在時刻が前回実行時刻と比べて秒単位で変化していない場合
-            // 100ms後に再試行するようインターバルタイムを設定する
-            intervalMillisecond = 100
-            // REDRAW_FORCELY フラグが指定されていない限り、ビューは更新しない
-            doUpdateAppWidget = flags.contains(UpdateAppWidgetFlags.REDRAW_FORCELY)
+        when {
+            appWidgetState.previousSecond <= 0 -> {
+                // 前回実行時刻が未設定の場合
+                // 100ms後に再試行するようインターバルタイムを設定する
+                intervalMillisecond = 100
+                // ビューを更新する
+                doUpdateAppWidget = true
+            }
+            currentSecond == appWidgetState.previousSecond -> {
+                // 現在時刻が前回実行時刻と比べて秒単位で変化していない場合
+                // 100ms後に再試行するようインターバルタイムを設定する
+                intervalMillisecond = 100
+                // REDRAW_FORCELY フラグが指定されていない限り、ビューは更新しない
+                doUpdateAppWidget = flags.contains(UpdateAppWidgetFlags.REDRAW_FORCELY)
 
-        } else {
-            // 現在時刻が前回実行時刻と比べて秒単位で秒数が変化している場合
-            // 950ms後に再試行するようインターバルタイムを設定する
-            intervalMillisecond = 950
-            // ビューを更新する
-            doUpdateAppWidget = true
+            }
+            else -> {
+                // 現在時刻が前回実行時刻と比べて秒単位で秒数が変化している場合
+                // 950ms後に再試行するようインターバルタイムを設定する
+                intervalMillisecond = 950
+                // ビューを更新する
+                doUpdateAppWidget = true
+            }
         }
+
         if (doUpdateAppWidget) {
+            // widget のビューを更新する
             updateDigitalClockWidgetViews(
                 views,
                 appWidgetSetting,
@@ -348,11 +383,6 @@ open class AppWidget : AppWidgetProvider() {
             val updateAppWidgetRunnable = Runnable {
                 // 時間が経過した後での実行なので、 appWidgetState と rRemoteViews を再取得する
                 val newAppWidgetState = AppWidgetState.load(context, appWidgetState.appWidgetId)
-                Log.d(
-                    javaClass.simpleName + ".updateDigitalClock()",
-                    "Continue task: appWidgetId=" + (newAppWidgetState?.appWidgetId
-                        ?: AppWidgetManager.INVALID_APPWIDGET_ID)
-                )
                 val newRemoteViews =
                     getRemoteViews(context, appWidgetManager, appWidgetState.appWidgetId)
                 if (newAppWidgetState != null) {
@@ -363,12 +393,6 @@ open class AppWidget : AppWidgetProvider() {
                         newAppWidgetState,
                         flags.except(UpdateAppWidgetFlags.REDRAW_FORCELY) // REDRAW_FORCELY は引き継がない
                     )
-                    /*
-                    Log.d(
-                        javaClass.canonicalName + ".updateDigitalClockWidget()",
-                        "Continue task: appWidgetId=" + newAppWidgetState.appWidgetId
-                    )
-                     */
                 }
             }
             handler.postDelayed(updateAppWidgetRunnable, intervalMillisecond)
@@ -379,13 +403,9 @@ open class AppWidget : AppWidgetProvider() {
 
         // appWidgetState を保存する
         appWidgetState.save(context)
-        Log.d(
-            javaClass.simpleName + ".updateDigitalClock()",
-            "Saved state: appWidgetId=" + appWidgetState.appWidgetId
-        )
     }
 
-    internal fun updateDigitalClockWidgetViews(
+    private fun updateDigitalClockWidgetViews(
         views: RemoteViews,
         appWidgetSetting: AppWidgetSetting,
         dateTime: AppWidgetDateTime
@@ -450,12 +470,6 @@ open class AppWidget : AppWidgetProvider() {
                     0
                 ) // 第2パラメタに appWidgetId を指定しないと onReceive が呼び出されない
                 remoteViews.setOnClickPendingIntent(R.id.AppWidgetRootView, pendingIntent)
-                /*
-                Log.d(
-                    javaClass.canonicalName + ".getRemoteViews()",
-                    "Registered action: appWidgetId=" + appWidgetId + ", packageName=" + intent.component?.packageName + ", className=" + intent.component?.className + ", actionName=" + intent.action
-                )
-                */
             }
         }
     }
@@ -468,12 +482,12 @@ open class AppWidget : AppWidgetProvider() {
             val actionName: String
         )
 
-        private val googleClockPackageName = "com.google.android.deskclock"
+        private const val googleClockPackageName = "com.google.android.deskclock"
         private val knownApplicationInfos =
             mutableMapOf<String, KnownApplicationInfo>().also { knownAppMap ->
                 arrayOf(
                     KnownApplicationInfo(
-                        googleClockPackageName,
+                        this.googleClockPackageName,
                         "com.android.deskclock.DeskClock",
                         arrayOf("android.intent.category.LAUNCHER"),
                         "android.intent.action.MAIN"
@@ -490,9 +504,7 @@ open class AppWidget : AppWidgetProvider() {
         }
 
         // 画面上の長さからセル数を求める
-        private fun getCellsForSize(size: Int): Int {
-            return (size + 30) / 70
-        }
+        private fun getCellsForSize(size: Int): Int = (size + 30) / 70
 
         // extras から appWidgetId を取得する
         fun parseExterasAsAppWidgetId(extras: Bundle?): Int {

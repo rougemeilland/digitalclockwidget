@@ -28,7 +28,7 @@ import android.text.InputFilter
 import android.text.Spanned
 import java.util.regex.Pattern
 
-class RegexInputFilter(val pattern: Pattern) : InputFilter {
+class RegexInputFilter(private val pattern: Pattern) : InputFilter {
     constructor(patternText: String) : this(Pattern.compile(patternText))
 
     override fun filter(
@@ -42,7 +42,7 @@ class RegexInputFilter(val pattern: Pattern) : InputFilter {
         if (source.isNullOrEmpty())
             return ""
 
-        val destStr = dest.toString();
+        val destStr = dest.toString()
         val newValue = destStr.substring(0, dstart) + source + destStr.substring(dend)
         val matcher = pattern.matcher(newValue)
         return if (matcher.matches()) {

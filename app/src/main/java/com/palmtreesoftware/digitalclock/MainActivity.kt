@@ -33,22 +33,24 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
+    private val tagOfLog: String = "GLOBALCONFIG"
+
     public override fun onCreate(icicle: Bundle?) {
         super.onCreate(icicle)
         setContentView(R.layout.activity_main)
 
-        if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+        if (Log.isLoggable(tagOfLog, Log.DEBUG))
             Log.d(
-                javaClass.simpleName,
+                tagOfLog,
                 "onCreate"
             )
         startUpActivity()
     }
 
     override fun onDestroy() {
-        if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+        if (Log.isLoggable(tagOfLog, Log.DEBUG))
             Log.d(
-                javaClass.simpleName,
+                tagOfLog,
                 "onDestroy"
             )
         cleanUpActivity()
@@ -56,9 +58,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startUpActivity() {
-        if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+        if (Log.isLoggable(tagOfLog, Log.DEBUG))
             Log.d(
-                javaClass.simpleName,
+                tagOfLog,
                 "startUpActivity"
             )
 
@@ -68,25 +70,25 @@ class MainActivity : AppCompatActivity() {
         }
 
         // "OK" ボタンのクリックハンドラを登録する
-        global_config_ok_button.setOnClickListener {
-            if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+        globalconfig_ok.setOnClickListener {
+            if (Log.isLoggable(tagOfLog, Log.DEBUG))
                 Log.d(
-                    javaClass.simpleName,
+                    tagOfLog,
                     "StartUpActivity: Clicked OK button"
                 )
 
             val appWidgetGlobalSetting = AppWidgetGlobalSetting(
-                if (global_config_onclick_digitalclock_button.isChecked) {
-                    if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+                if (globalconfig_onclickaction_googleclock.isChecked) {
+                    if (Log.isLoggable(tagOfLog, Log.DEBUG))
                         Log.d(
-                            javaClass.simpleName,
+                            tagOfLog,
                             "StartUpActivity: LAUNCH_GOOGLE_CLOCK_APPLICATION is checked"
                         )
                     AppWidgetClickAction.LAUNCH_GOOGLE_CLOCK_APPLICATION
                 } else {
-                    if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+                    if (Log.isLoggable(tagOfLog, Log.DEBUG))
                         Log.d(
-                            javaClass.simpleName,
+                            tagOfLog,
                             "StartUpActivity: LAUNCH_CONFIGURE is checked"
                         )
                     AppWidgetClickAction.LAUNCH_CONFIGURE
@@ -94,9 +96,9 @@ class MainActivity : AppCompatActivity() {
             )
 
             appWidgetGlobalSetting.save(this)
-            if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+            if (Log.isLoggable(tagOfLog, Log.DEBUG))
                 Log.d(
-                    javaClass.simpleName,
+                    tagOfLog,
                     "StartUpActivity: appWidgetGlobalSetting.appWidgetClickAction=${appWidgetGlobalSetting.appWidgetClickAction}"
                 )
 
@@ -106,10 +108,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         // "CANCEL" ボタンのクリックハンドラを登録する
-        global_config_cancel_button.setOnClickListener {
-            if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+        globalconfig_cancel.setOnClickListener {
+            if (Log.isLoggable(tagOfLog, Log.DEBUG))
                 Log.d(
-                    javaClass.simpleName,
+                    tagOfLog,
                     "StartUpActivity: Clicked Cancel button"
                 )
 
@@ -120,9 +122,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun cleanUpActivity() {
-        if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+        if (Log.isLoggable(tagOfLog, Log.DEBUG))
             Log.d(
-                javaClass.simpleName,
+                tagOfLog,
                 "cleanUpActivity"
             )
     }
@@ -137,55 +139,55 @@ class MainActivity : AppCompatActivity() {
 
         installedApplicationMap[googleClockPackageName].let { googlePackageInfo ->
             if (googlePackageInfo == null) {
-                if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+                if (Log.isLoggable(tagOfLog, Log.DEBUG))
                     Log.d(
-                        javaClass.simpleName,
+                        tagOfLog,
                         "initializeForm: Not installed $googleClockPackageName"
                     )
-                global_config_onclick_digitalclock_button.isEnabled = false
+                globalconfig_onclickaction_googleclock.isEnabled = false
             } else if (!googlePackageInfo.enabled) {
-                if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+                if (Log.isLoggable(tagOfLog, Log.DEBUG))
                     Log.d(
-                        javaClass.simpleName,
+                        tagOfLog,
                         "initializeForm: Installed, but disabled $googleClockPackageName"
                     )
-                global_config_onclick_digitalclock_button.isEnabled = false
+                globalconfig_onclickaction_googleclock.isEnabled = false
             } else {
-                if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+                if (Log.isLoggable(tagOfLog, Log.DEBUG))
                     Log.d(
-                        javaClass.simpleName,
+                        tagOfLog,
                         "initializeForm: Installed and enabled $googleClockPackageName"
                     )
-                global_config_onclick_digitalclock_button.isEnabled = true
+                globalconfig_onclickaction_googleclock.isEnabled = true
             }
 
             when (appWidgetGlobalSetting.appWidgetClickAction) {
                 AppWidgetClickAction.LAUNCH_GOOGLE_CLOCK_APPLICATION -> {
-                    if (!global_config_onclick_digitalclock_button.isEnabled) {
+                    if (!globalconfig_onclickaction_googleclock.isEnabled) {
                         // 以前に google 時計を起動するように設定されていたが、 google 時計がアンインストールされているか無効化されているため、
                         // 今回から AppWidgetConfigureActivity を表示するように暗黙的に設定を変更する
-                        global_config_onclick_configure_button.isChecked = true
+                        globalconfig_onclickaction_configure.isChecked = true
                         AppWidgetGlobalSetting(AppWidgetClickAction.LAUNCH_CONFIGURE).save(this)
-                        if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+                        if (Log.isLoggable(tagOfLog, Log.DEBUG))
                             Log.d(
-                                javaClass.simpleName,
-                                "initializeForm: LAUNCH_GOOGLE_CLOCK_APPLICATION is selected, but LAUNCH_CONFIGURE is used, because global_config_onclick_digitalclock_button is disabled"
+                                tagOfLog,
+                                "initializeForm: LAUNCH_GOOGLE_CLOCK_APPLICATION is selected, but LAUNCH_CONFIGURE is used, because globalconfig_onclickaction_googleclock is disabled"
                             )
                     } else {
-                        global_config_onclick_digitalclock_button.isChecked = true
-                        if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+                        globalconfig_onclickaction_googleclock.isChecked = true
+                        if (Log.isLoggable(tagOfLog, Log.DEBUG))
                             Log.d(
-                                javaClass.simpleName,
-                                "initializeForm: global_config_onclick_digitalclock_button is checked"
+                                tagOfLog,
+                                "initializeForm: globalconfig_onclickaction_googleclock is checked"
                             )
                     }
                 }
                 else -> {
-                    global_config_onclick_configure_button.isChecked = true
-                    if (Log.isLoggable(javaClass.simpleName, Log.DEBUG))
+                    globalconfig_onclickaction_configure.isChecked = true
+                    if (Log.isLoggable(tagOfLog, Log.DEBUG))
                         Log.d(
-                            javaClass.simpleName,
-                            "initializeForm: global_config_onclick_configure_button is checked"
+                            tagOfLog,
+                            "initializeForm: globalconfig_onclickaction_configure is checked"
                         )
                 }
             }

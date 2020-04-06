@@ -69,13 +69,7 @@ class AppWidgetDateTime private constructor(
                             ZoneId.systemDefault()
                         }
                         AppWidgetTimeZone.timeZoneIdOfTimeDifferenceExpression -> {
-                            if (Log.isLoggable("AppWidgetDateTime", Log.ERROR)
-                            )
-                                Log.e(
-                                    "AppWidgetDateTime",
-                                    "now: Detected bad timeZone.id: timeZone.id=${timeZone.id}"
-                                )
-                            ZoneId.systemDefault()
+                            throw Exception("AppWidgetDateTime.now: Detected bad timeZone.id: timeZone.id=${timeZone.id}")
                         }
                         else -> {
                             try {
@@ -107,13 +101,7 @@ class AppWidgetDateTime private constructor(
                             TimeZone.getDefault()
                         }
                         AppWidgetTimeZone.timeZoneIdOfTimeDifferenceExpression -> {
-                            if (Log.isLoggable("AppWidgetDateTime", Log.ERROR)
-                            )
-                                Log.e(
-                                    "AppWidgetDateTime",
-                                    "now: Detected bad timeZone.id: timeZone.id=${timeZone.id}"
-                                )
-                            TimeZone.getDefault()
+                            throw Exception("AppWidgetDateTime.now: Detected bad timeZone.id: timeZone.id=${timeZone.id}")
                         }
                         else -> {
                             try {

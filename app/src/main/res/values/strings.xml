@@ -23,39 +23,51 @@ SOFTWARE.
 -->
 <resources>
     <string name="app_name">DigitalClock</string>
+
     <string name="default_date_format">E, MMM dd</string>
     <string name="default_foreground_color" translatable="false">#FFFFFF</string>
-    <string name="config_dateformat_view_label">Date format</string>
-    <string name="config_add_widget_button_text">Add widget</string>
-    <string name="config_ok_button_text">OK</string>
-    <string name="config_cancel_button_text">Cancel</string>
-    <string name="config_foreground_color_view_label">Foreground color</string>
-    <string name="config_preview_button_text">Preview</string>
-    <string name="config_reset_button_text">Reset</string>
-    <string name="config_foreground_color_error_text">Input color code (e.g. &quot;#87CEEB&quot; or &quot;skyblue&quot;)</string>
-    <string name="config_foreground_color_view_hint">e.g. &quot;#87CEEB&quot; or &quot;skyblue&quot;</string>
-    <string name="config_dateformat_view_hint">e.g. &quot;E, MMM dd&quot;</string>
-    <string name="config_date_format_error_text">Input date format text (e.g. &quot;E, MMM dd&quot;)</string>
-    <string name="config_displayexamplebox_label">Display example</string>
-    <string name="global_config_action_selection_view_label">Select action on touching widget</string>
-    <string name="global_config_launch_widget_configuration_activity_button_text">Launch widget configuration activity</string>
-    <string name="global_config_launch_digital_clock_application_button_text">Launch digital clock application</string>
-    <string name="global_config_cancel_button_text">Cancel</string>
-    <string name="global_config_ok_button_text">OK</string>
-    <string name="global_config_action_selection_warning_view_text">If more than one widget is displayed, changing this setting will apply to all widgets.</string>
-    <string name="config_exampleview_hourminute_format" translatable="false">%02d:%02d</string>
-    <string name="config_exampleview_minute_format" translatable="false">:%02d</string>
-    <string name="appwidget_time_separater" translatable="false">:</string>
-    <string name="config_timezone_view_label">Time zone</string>
-    <string name="config_timezone_gmt_label">GMT</string>
-    <string-array name="config_timezone_name_selection_items">
-        <item>-@System default</item>
-        <item>GMT@Greenwich Mean Time</item>
-        <item>Asia/Tokyo@Japan Standard Time</item>
-        <item>America/New_York@Eastern Standard Time</item>
-        <item>America/Los_Angeles@Pacific Standard Time</item>
-        <item>Europe/Berlin@Central European Standard Time</item>
-        <item>Europe/Lisbon@Western European Standard Time</item>
-        <item>*@Enter the time difference from GMT</item>
+
+    <string name="config_date_format_label">Date format</string>
+    <string name="config_add_widget_button">Add widget</string>
+    <string name="config_ok_button">OK</string>
+    <string name="config_cancel_button">Cancel</string>
+    <string name="config_foreground_color_label">Foreground color</string>
+    <string name="config_preview_button">Preview</string>
+    <string name="config_reset_button">Reset</string>
+    <string name="config_foreground_color_error">Input color code (e.g. &quot;#87CEEB&quot; or &quot;skyblue&quot;)</string>
+    <string name="config_foreground_color_hint">e.g. &quot;#87CEEB&quot; or &quot;skyblue&quot;</string>
+    <string name="config_date_format_hint">e.g. &quot;E, MMM dd&quot;</string>
+    <string name="config_date_format_error">Input date format text (e.g. &quot;E, MMM dd&quot;)</string>
+    <string name="config_previewregion_label">Display example</string>
+    <string name="config_previewregion_hour_minute_format" translatable="false">%02d:%02d</string>
+    <string name="config_previewregion_second_format" translatable="false">:%02d</string>
+    <string name="config_time_zone_label">Time zone</string>
+    <string name="config_timezone_bynumber_gmt_label">GMT</string>
+
+    <string name="globalconfig_onlickaction_label">Select action on touching widget</string>
+    <string name="globalconfig_onlickaction_configure_button">Launch widget configuration activity</string>
+    <string name="globalconfig_onlickaction_googleclock_button">Launch digital clock application</string>
+    <string name="globalconfig_cancel_button">Cancel</string>
+    <string name="globalconfig_ok_button">OK</string>
+    <string name="globalconfig_onclickaction_warning">If more than one widget is displayed, changing this setting will apply to all widgets.</string>
+
+    <!-- AppWidgetTimeZone.mapTimeZoneIdToResourceId() も一緒に更新すること  -->
+    <string name="time_zone_short_name_DEFAULT" translatable="false" />
+    <string name="time_zone_short_name_GMT">GMT</string>
+    <string name="time_zone_short_name_JST">JST</string>
+    <string name="time_zone_short_name_EST">EST</string>
+    <string name="time_zone_short_name_PST">PST</string>
+    <string name="time_zone_short_name_CET">CET</string>
+    <string name="time_zone_short_name_WET">WET</string>
+
+    <string-array name="config_time_zone_selection_items">
+        <item>-!System default</item>
+        <item>GMT!Greenwich Mean Time</item>
+        <item>Asia/Tokyo!Japan Standard Time</item>
+        <item>America/New_York!Eastern Standard Time</item>
+        <item>America/Los_Angeles!Pacific Standard Time</item>
+        <item>Europe/Berlin!Central European Standard Time</item>
+        <item>Europe/Lisbon!Western European Standard Time</item>
+        <item>#!Enter the time difference from GMT</item>
     </string-array>
 </resources>

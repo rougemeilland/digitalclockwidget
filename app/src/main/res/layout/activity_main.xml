@@ -41,7 +41,7 @@ SOFTWARE.
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/global_config_action_selection_view_label"
+                android:text="@string/globalconfig_onlickaction_label"
                 android:textStyle="bold" />
 
             <RadioGroup
@@ -49,16 +49,16 @@ SOFTWARE.
                 android:layout_height="wrap_content">
 
                 <RadioButton
-                    android:id="@+id/global_config_onclick_configure_button"
+                    android:id="@+id/globalconfig_onclickaction_configure"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/global_config_launch_widget_configuration_activity_button_text" />
+                    android:text="@string/globalconfig_onlickaction_configure_button" />
 
                 <RadioButton
-                    android:id="@+id/global_config_onclick_digitalclock_button"
+                    android:id="@+id/globalconfig_onclickaction_googleclock"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/global_config_launch_digital_clock_application_button_text" />
+                    android:text="@string/globalconfig_onlickaction_googleclock_button" />
             </RadioGroup>
 
             <LinearLayout
@@ -75,7 +75,7 @@ SOFTWARE.
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="9"
-                    android:text="@string/global_config_action_selection_warning_view_text"
+                    android:text="@string/globalconfig_onclickaction_warning"
                     android:textStyle="italic" />
 
             </LinearLayout>
@@ -89,20 +89,20 @@ SOFTWARE.
         android:layout_gravity="bottom"
         android:orientation="horizontal">
         <Button
-            android:id="@+id/global_config_cancel_button"
+            android:id="@+id/globalconfig_cancel"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/global_config_view_margin"
             android:layout_weight="1"
-            android:text="@string/global_config_cancel_button_text"
+            android:text="@string/globalconfig_cancel_button"
             tools:ignore="ButtonStyle" />
         <Button
-            android:id="@+id/global_config_ok_button"
+            android:id="@+id/globalconfig_ok"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/global_config_view_margin"
             android:layout_weight="1"
-            android:text="@string/global_config_ok_button_text"
+            android:text="@string/globalconfig_ok_button"
             tools:ignore="ButtonStyle" />
     </LinearLayout>
 </LinearLayout>

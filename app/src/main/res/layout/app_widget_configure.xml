@@ -55,7 +55,7 @@ SOFTWARE.
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/config_view_margin"
-                        android:text="@string/config_displayexamplebox_label"
+                        android:text="@string/config_previewregion_label"
                         android:textStyle="bold" />
 
                     <FrameLayout
@@ -66,46 +66,59 @@ SOFTWARE.
                         android:background="@color/configLightFrameBorderColor"
                         android:padding="@dimen/config_frame_border_width">
 
-                        <LinearLayout
-                            android:id="@+id/config_preview_box"
+                        <RelativeLayout
+                            android:id="@+id/config_previewregion"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@color/configPreviewLightBackgroundColor"
                             android:orientation="vertical"
                             android:padding="@dimen/config_preview_padding">
 
-                            <LinearLayout
+                            <TextView
+                                android:id="@+id/config_preview_hour_minute"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/config_preview_hourminute_view"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="99:99"
-                                    android:textSize="@dimen/config_preview_hourminute_textsize"
-                                    tools:ignore="HardcodedText" />
-
-                                <TextView
-                                    android:id="@+id/config_preview_second_view"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text=":99"
-                                    android:textSize="@dimen/config_preview_second_textsize"
-                                    tools:ignore="HardcodedText" />
-                            </LinearLayout>
+                                android:text="99:99"
+                                android:textSize="@dimen/config_preview_hour_minute_textsize"
+                                tools:ignore="HardcodedText,SpUsage" />
 
                             <TextView
-                                android:id="@+id/config_preview_date_view"
+                                android:id="@+id/config_preview_time_zone_short_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_toEndOf="@id/config_preview_hour_minute"
+                                android:text="+0300"
+                                android:textSize="@dimen/config_preview_time_zone_short_name_text_size"
+                                tools:ignore="HardcodedText,SpUsage" />
+
+                            <Space
+                                android:id="@+id/config_preview_space_top_of_second"
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/config_preview_second_margin_top"
+                                android:layout_below="@id/config_preview_time_zone_short_name"
+                                android:layout_toEndOf="@id/config_preview_hour_minute" />
+
+                            <TextView
+                                android:id="@+id/config_preview_second"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/config_preview_space_top_of_second"
+                                android:layout_toEndOf="@id/config_preview_hour_minute"
+                                android:text=":99"
+                                android:textSize="@dimen/config_preview_second_textsize"
+                                tools:ignore="HardcodedText,SpUsage" />
+
+                            <TextView
+                                android:id="@+id/config_preview_date"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:text="Sun, 01 Jan"
                                 android:textSize="@dimen/config_preview_date_textsize"
-                                tools:ignore="HardcodedText" />
-                        </LinearLayout>
+                                android:layout_below="@id/config_preview_hour_minute"
+                                android:layout_centerHorizontal="true"
+                                tools:ignore="HardcodedText,SpUsage" />
+                        </RelativeLayout>
                     </FrameLayout>
                 </LinearLayout>
             </FrameLayout>
@@ -131,16 +144,16 @@ SOFTWARE.
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/config_view_margin"
-                            android:text="@string/config_dateformat_view_label"
+                            android:text="@string/config_date_format_label"
                             android:textStyle="bold" />
 
                         <EditText
-                            android:id="@+id/config_date_format_view"
+                            android:id="@+id/config_date_format"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/config_view_margin"
                             android:layout_weight="1"
-                            android:hint="@string/config_dateformat_view_hint"
+                            android:hint="@string/config_date_format_hint"
                             android:importantForAutofill="no"
                             android:inputType="text"
                             tools:ignore="TextFields" />
@@ -152,16 +165,16 @@ SOFTWARE.
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/config_view_margin"
-                            android:text="@string/config_foreground_color_view_label"
+                            android:text="@string/config_foreground_color_label"
                             android:textStyle="bold" />
 
                         <EditText
-                            android:id="@+id/config_foreground_color_view"
+                            android:id="@+id/config_foreground_color"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/config_view_margin"
                             android:layout_weight="1"
-                            android:hint="@string/config_foreground_color_view_hint"
+                            android:hint="@string/config_foreground_color_hint"
                             android:importantForAutofill="no"
                             android:inputType="textVisiblePassword" />
                     </TableRow>
@@ -173,7 +186,7 @@ SOFTWARE.
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_margin="@dimen/config_view_margin"
-                            android:text="@string/config_timezone_view_label"
+                            android:text="@string/config_time_zone_label"
                             android:textStyle="bold" />
 
                         <LinearLayout
@@ -183,14 +196,14 @@ SOFTWARE.
                             android:orientation="vertical">
 
                             <Spinner
-                                android:id="@+id/config_timesone_name"
+                                android:id="@+id/config_timeszne_name"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
-                                android:entries="@array/config_timezone_name_selection_items" />
+                                android:entries="@array/config_time_zone_selection_items" />
 
                             <LinearLayout
-                                android:id="@+id/config_timesone_by_number_box"
+                                android:id="@+id/config_timesone_bynumber"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal">
@@ -200,10 +213,10 @@ SOFTWARE.
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center_vertical"
                                     android:fontFamily="monospace"
-                                    android:text="@string/config_timezone_gmt_label" />
+                                    android:text="@string/config_timezone_bynumber_gmt_label" />
 
                                 <NumberPicker
-                                    android:id="@+id/config_timesone_hour"
+                                    android:id="@+id/config_timesone_bynumber_hour"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center_vertical" />
@@ -213,10 +226,11 @@ SOFTWARE.
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center_vertical"
                                     android:fontFamily="monospace"
-                                    android:text="@string/appwidget_time_separater" />
+                                    android:text=":"
+                                    tools:ignore="HardcodedText" />
 
                                 <NumberPicker
-                                    android:id="@+id/config_timesone_minute"
+                                    android:id="@+id/config_timesone_bynumber_minute"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center_vertical" />
@@ -227,13 +241,13 @@ SOFTWARE.
                     <TableRow>
 
                         <Button
-                            android:id="@+id/config_reset_button"
+                            android:id="@+id/config_reset"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_margin="@dimen/config_view_margin"
                             android:layout_weight="0.5"
-                            android:text="@string/config_reset_button_text" />
+                            android:text="@string/config_reset_button" />
 
                         <Space
                             android:layout_width="0dp"
@@ -252,34 +266,34 @@ SOFTWARE.
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/config_cancel_button"
+            android:id="@+id/config_cancel"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:layout_margin="@dimen/config_view_margin"
             android:layout_weight="1"
-            android:text="@string/config_cancel_button_text"
+            android:text="@string/config_cancel_button"
             tools:ignore="ButtonStyle" />
 
 
         <Button
-            android:id="@+id/config_preview_button"
+            android:id="@+id/config_preview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_margin="@dimen/config_view_margin"
             android:layout_weight="1"
-            android:text="@string/config_preview_button_text"
+            android:text="@string/config_preview_button"
             tools:ignore="ButtonStyle" />
 
         <Button
-            android:id="@+id/config_ok_button"
+            android:id="@+id/config_ok"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_margin="@dimen/config_view_margin"
             android:layout_weight="1"
-            android:text="@string/config_add_widget_button_text"
+            android:text="@string/config_add_widget_button"
             tools:ignore="ButtonStyle" />
     </LinearLayout>
 </LinearLayout>

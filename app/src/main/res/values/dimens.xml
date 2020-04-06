@@ -27,41 +27,47 @@ SOFTWARE.
 Refer to App Widget Documentation for margin information
 http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     -->
-    <dimen name="widget_margin">8dp</dimen>
+    <dimen name="widget_margin">0dp</dimen>
 
     <dimen name="widget3x2_width">180dp</dimen>
     <dimen name="widget3x2_height">110dp</dimen>
-    <dimen name="widget3x2_hourview_width">55dp</dimen>
+    <dimen name="widget3x2_timezoneview_width">42dp</dimen>
+    <dimen name="widget3x2_timezoneview_height">24dp</dimen>
+    <dimen name="widget3x2_hourview_width">65dp</dimen>
     <dimen name="widget3x2_mminuteview_delimiter_width">8dp</dimen>
-    <dimen name="widget3x2_minuteview_width">55dp</dimen>
-    <dimen name="widget3x2_hourminuteview_height">62dp</dimen>
+    <dimen name="widget3x2_minuteview_width">65dp</dimen>
+    <dimen name="widget3x2_hourminuteview_height">75dp</dimen>
     <dimen name="widget3x2_secondview_delimiter_width">7dp</dimen>
     <dimen name="widget3x2_secondview_width">35dp</dimen>
     <dimen name="widget3x2_secondview_height">40dp</dimen>
-    <dimen name="widget3x2_secondview_margintop">16dp</dimen>
-    <dimen name="widget3x2_dateview_width">164dp</dimen>
-    <dimen name="widget3x2_dateview_height">32dp</dimen>
+    <dimen name="widget3x2_secondview_margintop">4dp</dimen>
+    <dimen name="widget3x2_dateview_width">180dp</dimen>
+    <dimen name="widget3x2_dateview_height">35dp</dimen>
 
     <dimen name="widget4x2_width">250dp</dimen>
     <dimen name="widget4x2_height">110dp</dimen>
-    <dimen name="widget4x2_hourview_width">60dp</dimen>
+    <dimen name="widget4x2_timezoneview_width">48dp</dimen>
+    <dimen name="widget4x2_timezoneview_height">27dp</dimen>
+    <dimen name="widget4x2_hourview_width">75dp</dimen>
     <dimen name="widget4x2_mminuteview_delimiter_width">12dp</dimen>
-    <dimen name="widget4x2_minuteview_width">60dp</dimen>
-    <dimen name="widget4x2_hourminuteview_height">62dp</dimen>
+    <dimen name="widget4x2_minuteview_width">75dp</dimen>
+    <dimen name="widget4x2_hourminuteview_height">80dp</dimen>
     <dimen name="widget4x2_secondview_delimiter_width">8dp</dimen>
     <dimen name="widget4x2_secondview_width">40dp</dimen>
-    <dimen name="widget4x2_secondview_height">41dp</dimen>
-    <dimen name="widget4x2_secondview_margintop">16dp</dimen>
-    <dimen name="widget4x2_dateview_width">234dp</dimen>
-    <dimen name="widget4x2_dateview_height">32dp</dimen>
+    <dimen name="widget4x2_secondview_height">40dp</dimen>
+    <dimen name="widget4x2_secondview_margintop">5dp</dimen>
+    <dimen name="widget4x2_dateview_width">250dp</dimen>
+    <dimen name="widget4x2_dateview_height">30dp</dimen>
 
     <dimen name="config_frame_border_width">2dp</dimen>
     <dimen name="config_view_margin">4dp</dimen>
     <dimen name="config_space_between_flames">8dp</dimen>
     <dimen name="config_preview_padding">20dp</dimen>
-    <dimen name="config_preview_hourminute_textsize">60sp</dimen>
-    <dimen name="config_preview_second_textsize">40sp</dimen>
-    <dimen name="config_preview_date_textsize">30sp</dimen>
+    <dimen name="config_preview_hour_minute_textsize">60dp</dimen>
+    <dimen name="config_preview_time_zone_short_name_text_size">18dp</dimen>
+    <dimen name="config_preview_second_margin_top">3dp</dimen>
+    <dimen name="config_preview_second_textsize">35dp</dimen>
+    <dimen name="config_preview_date_textsize">30dp</dimen>
 
     <dimen name="global_config_view_margin">4dp</dimen>
 </resources>

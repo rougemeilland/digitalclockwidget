@@ -21,86 +21,95 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/AppWidgetRootView"
+    android:id="@+id/widget_root"
     android:layout_width="@dimen/widget3x2_width"
     android:layout_height="@dimen/widget3x2_height"
-    android:orientation="vertical"
-    android:padding="@dimen/widget_margin">
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal">
+    android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/HourView"
-            android:layout_width="@dimen/widget3x2_hourview_width"
-            android:layout_height="@dimen/widget3x2_hourminuteview_height"
-            android:layout_gravity="center_vertical"
-            android:fontFamily="sans-serif-medium"
-            android:gravity="bottom|end"
-            android:maxLines="1"
-            android:text="99"
-            android:textSize="56sp"
-            tools:ignore="HardcodedText" />
-
-        <TextView
-            android:id="@+id/HourMinuteDelimiterView"
-            android:layout_width="@dimen/widget3x2_mminuteview_delimiter_width"
-            android:layout_height="@dimen/widget3x2_hourminuteview_height"
-            android:layout_gravity="center"
-            android:fontFamily="sans-serif"
-            android:gravity="center|bottom"
-            android:maxLines="1"
-            android:text="@string/appwidget_time_separater"
-            android:textSize="56sp" />
-        <TextView
-            android:id="@+id/MinuteView"
-            android:layout_width="@dimen/widget3x2_minuteview_width"
-            android:layout_height="@dimen/widget3x2_hourminuteview_height"
-            android:layout_gravity="center_vertical"
-            android:fontFamily="sans-serif-medium"
-            android:gravity="start|bottom"
-            android:maxLines="1"
-            android:text="99"
-            android:textSize="56sp"
-            tools:ignore="HardcodedText" />
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/widget3x2_secondview_margintop">
-            <TextView
-                android:id="@+id/MinuteSecondDelimiterView"
-                android:layout_width="@dimen/widget3x2_secondview_delimiter_width"
-                android:layout_height="@dimen/widget3x2_secondview_height"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center|bottom"
-                android:maxLines="1"
-                android:text="@string/appwidget_time_separater"
-                android:textSize="30sp" />
-            <TextView
-                android:id="@+id/SecondView"
-                android:layout_width="@dimen/widget3x2_secondview_width"
-                android:layout_height="@dimen/widget3x2_secondview_height"
-                android:layout_gravity="center_vertical"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="start|bottom"
-                android:maxLines="1"
-                android:text="99"
-                android:textSize="30sp"
-                tools:ignore="HardcodedText" />
-        </LinearLayout>
-    </LinearLayout>
     <TextView
-        android:id="@+id/DateView"
-        android:layout_width="@dimen/widget3x2_dateview_width"
-        android:layout_height="@dimen/widget3x2_dateview_height"
-        android:fontFamily="sans-serif-medium"
+        android:id="@+id/widget_date"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:fontFamily="sans-serif-condensed-medium"
         android:gravity="center_horizontal"
         android:text="Sun, 01 Jan"
-        android:textSize="28sp"
-        tools:ignore="HardcodedText" />
-</LinearLayout>
+        android:textSize="28dp"
+        tools:ignore="HardcodedText,SpUsage" />
+
+    <TextView
+        android:id="@+id/widget_time_zone_short_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|top"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:maxLines="1"
+        android:text="+0300"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        tools:ignore="HardcodedText,SpUsage" />
+
+    <TextView
+        android:id="@+id/widget_minute_delimiter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="62dp"
+        android:layout_marginTop="2dp"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:text=":"
+        android:textSize="66dp"
+        tools:ignore="HardcodedText,SpUsage" />
+
+    <TextView
+        android:id="@+id/widget_second_delimiter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="140dp"
+        android:layout_marginTop="41dp"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:text=":"
+        android:textSize="30dp"
+        tools:ignore="HardcodedText,SpUsage" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/widget_hour"
+            android:layout_width="67dp"
+            android:layout_height="75dp"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:maxLines="1"
+            android:text="88"
+            android:textSize="66dp"
+            tools:ignore="HardcodedText,SpUsage" />
+
+        <TextView
+            android:id="@+id/widget_minute"
+            android:layout_width="67dp"
+            android:layout_height="75dp"
+            android:layout_marginStart="10dp"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:maxLines="1"
+            android:text="88"
+            android:textSize="66dp"
+            tools:ignore="HardcodedText,SpUsage" />
+
+        <TextView
+            android:id="@+id/widget_second"
+            android:layout_width="33dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="3dp"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:maxLines="1"
+            android:text="88"
+            android:textSize="31dp"
+            tools:ignore="HardcodedText,SpUsage" />
+    </LinearLayout>
+</FrameLayout>
